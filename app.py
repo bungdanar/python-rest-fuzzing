@@ -4,6 +4,8 @@ from flask_restful import Api
 from .resources.product import ProductResource
 from .common.db import db, migrate
 
+from .models.product import Product
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = environ.get(
