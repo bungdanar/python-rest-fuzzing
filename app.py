@@ -1,8 +1,14 @@
+from os import environ
 from flask import Flask
 from flask_restful import Api
 from .resources.product import ProductResource
+from .common.db import db
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("SQLALCHEMY_DATABASE_URI")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = environ.get(
+    "SQLALCHEMY_TRACK_MODIFICATIONS")
+
 api = Api(app)
 
 
@@ -12,3 +18,5 @@ def hello_world():
 
 
 api.add_resource(ProductResource, "/api/product")
+
+db.init_app(app)
