@@ -2,7 +2,7 @@ from os import environ
 from flask import Flask
 from flask_restful import Api
 from .resources.product import ProductResource
-from .common.db import db
+from .common.db import db, migrate
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = environ.get("SQLALCHEMY_DATABASE_URI")
@@ -20,3 +20,4 @@ def hello_world():
 api.add_resource(ProductResource, "/api/product")
 
 db.init_app(app)
+migrate.init_app(app, db)
