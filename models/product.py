@@ -1,5 +1,7 @@
 from ..common.db import db
 from sqlalchemy.dialects.mysql import INTEGER, DECIMAL, DOUBLE
+from sqlalchemy import DateTime
+from sqlalchemy.sql import func
 
 
 class Product(db.Model):
@@ -16,4 +18,8 @@ class Product(db.Model):
     description = db.Column(db.String(1000), nullable=False)
     weight = db.Column(DOUBLE(unsigned=True), nullable=False)
     note = db.Column(db.String(255), nullable=False)
-    published = db.Column(db.Boolean, nullable=False)
+    published = db.Column(db.Boolean, nullable=False, default=False)
+    created_at = db.Column(DateTime(timezone=True),
+                           nullable=False, server_default=func.now())
+    updated_at = db.Column(DateTime(timezone=True),
+                           nullable=False, onupdate=func.now())
