@@ -1,0 +1,358 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "RESTful API for Fuzzing",
+    "version": "1.0",
+    "description": "OpenAPI spec for Experimental RESTful API for Fuzzing",
+    "contact": {
+      "name": "Danar Gumilang Putera",
+      "email": "danar.g.putera@gmail.com",
+      "url": "https://github.com/bungdanar/python-rest-fuzzing"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/license/mit/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Experimental RESTful API Server for Fuzzing"
+    }
+  ],
+  "externalDocs": {
+    "url": "https://github.com/bungdanar/python-rest-fuzzing",
+    "description": "Experimental RESTful API Server Written in Python"
+  },
+  "paths": {
+    "/product/ma/lv2": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Get All Products",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "Get product by id",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Get products that contain name",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "sku",
+            "in": "query",
+            "required": false,
+            "description": "Get products that contain sku",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "regular_price",
+            "in": "query",
+            "required": false,
+            "description": "Get products with regular price less than or equal",
+            "schema": {
+              "type": "number",
+              "format": "decimal",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "discount_price",
+            "in": "query",
+            "required": false,
+            "description": "Get products with discount price less than or equal",
+            "schema": {
+              "type": "number",
+              "format": "decimal",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "quantity",
+            "in": "query",
+            "required": false,
+            "description": "Get product with quantity less than or equal",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "description": "Get products that contain description",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          },
+          {
+            "name": "weight",
+            "in": "query",
+            "required": false,
+            "description": "Get product with weight less than or equal",
+            "schema": {
+              "type": "number",
+              "format": "float",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "description": "Get products that contain note",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          },
+          {
+            "name": "published",
+            "in": "query",
+            "required": false,
+            "description": "Get products by published status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "created_at",
+            "in": "query",
+            "required": false,
+            "description": "Get products with created date less than or equal",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully get all products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Create New Product",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "sku",
+                  "regular_price",
+                  "discount_price",
+                  "quantity",
+                  "description",
+                  "weight",
+                  "note"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 255
+                  },
+                  "sku": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 255
+                  },
+                  "regular_price": {
+                    "type": "number",
+                    "format": "decimal",
+                    "minimum": 0
+                  },
+                  "discount_price": {
+                    "type": "number",
+                    "format": "decimal",
+                    "minimum": 0
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "format": "int32",
+                    "minimum": 0
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 1000
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 255
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully create new product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProductResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "regular_price": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "discount_price": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number",
+            "format": "float"
+          },
+          "note": {
+            "type": "string"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ErrResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
