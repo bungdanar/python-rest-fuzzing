@@ -1,36 +1,33 @@
-from flask import current_app as app
-from flask_restful import Resource, reqparse
-from ..models.product import Product
+from flask import request
+from flask.views import MethodView
+from flask_smorest import Blueprint, abort
+from sqlalchemy.exc import SQLAlchemyError
+
+from common.db import db
+from common.schemas import ProductResponseSchema
+from models import ProductModel
+
+blp = Blueprint("product", __name__, description="Operation on product")
 
 
-class ProductResource(Resource):
+@blp.route("/api/product")
+class Product(MethodView):
+    @blp.response(200, ProductResponseSchema(many=True))
     def get(self):
-        return {
-            "products": []
-        }
+        raise NotImplementedError()
 
+    @blp.response(201, ProductResponseSchema)
     def post(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("name")
-        parser.add_argument("sku")
-        parser.add_argument("regular_price")
-        parser.add_argument("discount_price")
-        parser.add_argument("quantity")
-        parser.add_argument("description")
-        parser.add_argument("weight")
-        parser.add_argument("note")
-        parser.add_argument("published")
+        data = request.get_json()
 
-        data = parser.parse_args()
-        product = Product(data)
+        product = ProductModel(**data)
 
         try:
-            product.save_to_db()
-        except Exception as e:
-            app.logger.error(e)
-            return {
-                "message": "Internal Server Error",
-                "statusCode": 500
-            }, 500
+            db.session.add(product)
+            db.session.commit()
+        except SQLAlchemyError as sql_exc:
+            abort(500, message=str(sql_exc))
+        except Exception as exc:
+            abort(500, message=str(exc))
 
-        return product.json(), 201
+        return product
