@@ -4,7 +4,7 @@ from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
 
 from common.db import db
-from common.schemas import ProductResponseSchema
+from schemas.product import ProductResponseSchema
 from models import ProductModel
 
 blp = Blueprint("product", __name__, description="Operation on product")
