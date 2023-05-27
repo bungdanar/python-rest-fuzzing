@@ -14,7 +14,16 @@ blp = Blueprint("product", __name__, description="Operation on product")
 class Product(MethodView):
     @blp.response(200, ProductResponseSchema(many=True))
     def get(self):
-        raise NotImplementedError()
+        query = request.args
+
+        try:
+            products = ProductModel.query.filter_by(**query)
+        except SQLAlchemyError as sql_exc:
+            abort(500, message=str(sql_exc))
+        except Exception as exc:
+            abort(500, message=str(exc))
+
+        return products
 
     @blp.response(201, ProductResponseSchema)
     def post(self):
