@@ -6,8 +6,10 @@ RUN pip install pipenv
 
 WORKDIR /app
 
-COPY . .
+COPY Pipfile* .
 
 RUN pipenv install --system --deploy
 
 RUN pip install gunicorn
+
+COPY . .
