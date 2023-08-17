@@ -12,7 +12,7 @@ class CouponModel(db.Model):
     discount_value = db.Column(DECIMAL(precision=5, scale=2,
                                        unsigned=True), nullable=False)
     discount_type = db.Column(db.String(255), nullable=False)
-    times_used = db.Column(INTEGER(unsigned=True), nullable=False)
+    times_used = db.Column(INTEGER(unsigned=True), nullable=False, default=0)
     max_usage = db.Column(INTEGER(unsigned=True), nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
