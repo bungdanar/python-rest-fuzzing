@@ -1,6 +1,7 @@
 from flask import jsonify
 from flask_restful import Resource
 
+from common.db import db
 from common.ma_schema import products_schema
 from common.ma_schema import tags_schema
 from common.ma_schema import categories_schema
@@ -15,13 +16,18 @@ from models.coupon import CouponModel
 from models.product_tag import ProductTagModel
 from models.product_category import ProductCategoryModel
 from models.product_coupon import ProductCouponModel
+from common.response_schema import product_tag_category_many_res_schema
 
 
 class Test(Resource):
     def get(self):
-        # products = ProductModel.query.limit(10).all()
-        # result = products_schema.dump(products)
-        # return jsonify(result)
+        products = ProductModel.query.options(
+            db.joinedload(ProductModel.tags),
+            db.joinedload(ProductModel.categories)
+        ).limit(10).all()
+
+        result = product_tag_category_many_res_schema.dump(products)
+        return jsonify(result)
 
         # tags = TagModel.query.limit(10).all()
         # result = tags_schema.dump(tags)
@@ -43,6 +49,6 @@ class Test(Resource):
         # result = products_categories_schema.dump(products_categories)
         # return jsonify(result)
 
-        products_coupons = ProductCouponModel.query.limit(10).all()
-        result = products_coupons_schema.dump(products_coupons)
-        return jsonify(result)
+        # products_coupons = ProductCouponModel.query.limit(10).all()
+        # result = products_coupons_schema.dump(products_coupons)
+        # return jsonify(result)

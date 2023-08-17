@@ -23,3 +23,9 @@ class ProductModel(db.Model):
         db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(
         db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    tags = db.relationship(
+        "TagModel", back_populates="products", secondary="product_tag")
+
+    categories = db.relationship(
+        "CategoryModel", back_populates="products", secondary="product_category")
