@@ -16,17 +16,18 @@ from models.coupon import CouponModel
 from models.product_tag import ProductTagModel
 from models.product_category import ProductCategoryModel
 from models.product_coupon import ProductCouponModel
-from common.response_schema import product_tag_category_many_res_schema
+from common.response_schema import product_tag_category_coupon_many_res_schema
 
 
 class Test(Resource):
     def get(self):
         products = ProductModel.query.options(
             db.joinedload(ProductModel.tags),
-            db.joinedload(ProductModel.categories)
-        ).limit(10).all()
+            db.joinedload(ProductModel.categories),
+            db.joinedload(ProductModel.coupons)
+        ).limit(10).offset(10).all()
 
-        result = product_tag_category_many_res_schema.dump(products)
+        result = product_tag_category_coupon_many_res_schema.dump(products)
         return jsonify(result)
 
         # tags = TagModel.query.limit(10).all()

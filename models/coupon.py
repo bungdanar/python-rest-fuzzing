@@ -20,3 +20,6 @@ class CouponModel(db.Model):
         db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(
         db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    products = db.relationship(
+        "ProductModel", back_populates="coupons", secondary="product_coupon")

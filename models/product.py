@@ -29,3 +29,6 @@ class ProductModel(db.Model):
 
     categories = db.relationship(
         "CategoryModel", back_populates="products", secondary="product_category")
+
+    coupons = db.relationship(
+        "CouponModel", back_populates="products", secondary="product_coupon")
