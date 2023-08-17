@@ -1,2 +1,25 @@
+import os
+
+from flask import Flask
+from flask_restful import Api
+
+from common.db import db
+from common.ma_schema import ma
+from resources.test import Test
+import models
+
+
 def create_app(db_url=None):
-    pass
+    app = Flask(__name__)
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
+        "DATABASE_URL", "sqlite:///data.db")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    db.init_app(app)
+    ma.init_app(app)
+    api = Api(app)
+
+    api.add_resource(Test, '/')
+
+    return app

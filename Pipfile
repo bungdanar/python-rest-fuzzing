@@ -6,6 +6,10 @@ name = "pypi"
 [packages]
 flask-restful = "*"
 flask-sqlalchemy = "*"
+mysqlclient = "*"
+python-dotenv = "*"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
 
 [dev-packages]
 
