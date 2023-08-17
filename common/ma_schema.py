@@ -49,7 +49,9 @@ class ProductCouponSchema(ma.SQLAlchemyAutoSchema):
         include_fk = True
 
 
+product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
+
 tags_schema = TagSchema(many=True)
 categories_schema = CategorySchema(many=True)
 coupons_schema = CouponSchema(many=True)

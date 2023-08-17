@@ -5,6 +5,7 @@ from flask_restful import Api
 
 from common.db import db
 from common.ma_schema import ma
+from resources.product import ProductResource
 from resources.test import Test
 import models
 
@@ -21,5 +22,6 @@ def create_app(db_url=None):
     api = Api(app)
 
     api.add_resource(Test, '/')
+    api.add_resource(ProductResource, '/api/product')
 
     return app
