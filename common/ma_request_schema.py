@@ -1,9 +1,35 @@
-from marshmallow import Schema, fields, validate
+from datetime import datetime
+
+from marshmallow import Schema, ValidationError, fields, validate
+
+
+class DateOrDatetimeField(fields.Field):
+    def _deserialize(self, value, attr, data, **kwargs):
+        try:
+            # Try parsing as datetime first
+            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S').date()
+        except ValueError:
+            try:
+                # Try parsing as date
+                return datetime.strptime(value, '%Y-%m-%d').date()
+            except ValueError:
+                raise ValidationError("Invalid date/datetime format")
 
 
 class CategoryCreatePayloadWithPartialValidation(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
+
+
+class CouponCreatePAyloadWithPartialValidation(Schema):
+    code = fields.Str(required=True)
+    description = fields.Str(required=True)
+    discount_value = fields.Decimal(required=True)
+    discount_type = fields.Str(required=True)
+    times_used = fields.Int(required=False)
+    max_usage = fields.Int(required=True)
+    start_date = DateOrDatetimeField(required=True)
+    end_date = DateOrDatetimeField(required=True)
 
 
 class ProductCreatePayloadWithPartialValidation(Schema):
@@ -13,7 +39,7 @@ class ProductCreatePayloadWithPartialValidation(Schema):
     discount_price = fields.Decimal(required=True)
     quantity = fields.Int(required=True)
     description = fields.Str(required=True)
-    weight = fields.Float(required=True)
+    weight = fields.Decimal(required=True)
     note = fields.Str(required=True)
     published = fields.Boolean(required=False)
 
@@ -23,3 +49,14 @@ class ProductTagCategoryCreatePayloadWithPartialValidation(ProductCreatePayloadW
                        required=True, validate=validate.Length(min=1))
     category = fields.Nested(
         CategoryCreatePayloadWithPartialValidation(), required=True)
+
+
+class ProductTagCategoryCouponCreatePayloadWithPartialValidation(ProductCreatePayloadWithPartialValidation):
+    tags = fields.List(fields.Str(required=True),
+                       required=True, validate=validate.Length(min=1))
+
+    categories = fields.List(fields.Nested(CategoryCreatePayloadWithPartialValidation(
+    )), required=True, validate=validate.Length(min=1))
+
+    coupons = fields.List(fields.Nested(CouponCreatePAyloadWithPartialValidation(
+    )), required=True, validate=validate.Length(min=1))
