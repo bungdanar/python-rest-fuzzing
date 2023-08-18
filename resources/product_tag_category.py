@@ -1,7 +1,10 @@
 from operator import itemgetter
 
 from flask import jsonify, request
-from flask_restful import Resource
+from flask_restful import Resource, abort
+from marshmallow import ValidationError
+from common.handle_validation_err import handle_ma_validation_err
+from common.ma_request_schema import ProductTagCategoryCreatePayloadWithPartialValidation
 
 from models.category import CategoryModel
 from models.product import ProductModel
@@ -10,27 +13,49 @@ from common.db import db
 from common.response_schema import product_tag_category_res_schema
 
 
+def _handle_insert_product(data):
+    tags = itemgetter('tags')(data)
+    tags = [{'name': t} for t in tags]
+    tags = [TagModel(**t) for t in tags]
+
+    category = itemgetter('category')(data)
+    category = CategoryModel(**category)
+
+    data.pop('tags')
+    data.pop('category')
+
+    product = ProductModel(**data)
+    product.categories.append(category)
+    product.tags.extend(tags)
+
+    db.session.add(product)
+    db.session.commit()
+
+    return product
+
+
+def _generate_res_for_created_product(product: ProductModel):
+    response = jsonify(product_tag_category_res_schema.dump(product))
+    response.status_code = 201
+    return response
+
+
 class ProductTagCategoryResource(Resource):
     def post(self):
         data = request.get_json()
 
-        tags = itemgetter('tags')(data)
-        tags = [{'name': t} for t in tags]
-        tags = [TagModel(**t) for t in tags]
+        product = _handle_insert_product(data)
+        return _generate_res_for_created_product(product)
 
-        category = itemgetter('category')(data)
-        category = CategoryModel(**category)
 
-        data.pop('tags')
-        data.pop('category')
+class ProductTagCategoryWithPartialMaValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
 
-        product = ProductModel(**data)
-        product.categories.append(category)
-        product.tags.extend(tags)
+        try:
+            validationResult = ProductTagCategoryCreatePayloadWithPartialValidation().load(data)
+        except ValidationError as err:
+            handle_ma_validation_err(err)
 
-        db.session.add(product)
-        db.session.commit()
-
-        res = jsonify(product_tag_category_res_schema.dump(product))
-        res.status_code = 201
-        return res
+        product = _handle_insert_product(validationResult)
+        return _generate_res_for_created_product(product)

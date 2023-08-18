@@ -1,4 +1,9 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
+
+
+class CategoryCreatePayloadWithPartialValidation(Schema):
+    name = fields.Str(required=True)
+    description = fields.Str(required=True)
 
 
 class ProductCreatePayloadWithPartialValidation(Schema):
@@ -11,3 +16,10 @@ class ProductCreatePayloadWithPartialValidation(Schema):
     weight = fields.Float(required=True)
     note = fields.Str(required=True)
     published = fields.Boolean(required=False)
+
+
+class ProductTagCategoryCreatePayloadWithPartialValidation(ProductCreatePayloadWithPartialValidation):
+    tags = fields.List(fields.Str(required=True),
+                       required=True, validate=validate.Length(min=1))
+    category = fields.Nested(
+        CategoryCreatePayloadWithPartialValidation(), required=True)
