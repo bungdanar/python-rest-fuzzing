@@ -16,12 +16,12 @@ class DateOrDatetimeField(fields.Field):
                 raise ValidationError("Invalid date/datetime format")
 
 
-class CategoryCreatePayloadWithPartialValidation(Schema):
+class CategoryCreatePartialValidation(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
 
 
-class CouponCreatePAyloadWithPartialValidation(Schema):
+class CouponCreatePartialValidation(Schema):
     code = fields.Str(required=True)
     description = fields.Str(required=True)
     discount_value = fields.Decimal(required=True)
@@ -32,7 +32,7 @@ class CouponCreatePAyloadWithPartialValidation(Schema):
     end_date = DateOrDatetimeField(required=True)
 
 
-class ProductCreatePayloadWithPartialValidation(Schema):
+class ProductCreatePartialValidation(Schema):
     name = fields.Str(required=True)
     sku = fields.Str(required=True)
     regular_price = fields.Decimal(required=True)
@@ -44,25 +44,25 @@ class ProductCreatePayloadWithPartialValidation(Schema):
     published = fields.Boolean(required=False)
 
 
-class ProductTagCategoryCreatePayloadWithPartialValidation(ProductCreatePayloadWithPartialValidation):
+class ProductTagCategoryCreatePartialValidation(ProductCreatePartialValidation):
     tags = fields.List(fields.Str(required=True),
                        required=True, validate=validate.Length(min=1))
     category = fields.Nested(
-        CategoryCreatePayloadWithPartialValidation(), required=True)
+        CategoryCreatePartialValidation(), required=True)
 
 
-class ProductTagCategoryCouponCreatePayloadWithPartialValidation(ProductCreatePayloadWithPartialValidation):
+class ProductTagCategoryCouponCreatePartialValidation(ProductCreatePartialValidation):
     tags = fields.List(fields.Str(required=True),
                        required=True, validate=validate.Length(min=1))
 
-    categories = fields.List(fields.Nested(CategoryCreatePayloadWithPartialValidation(
+    categories = fields.List(fields.Nested(CategoryCreatePartialValidation(
     )), required=True, validate=validate.Length(min=1))
 
-    coupons = fields.List(fields.Nested(CouponCreatePAyloadWithPartialValidation(
+    coupons = fields.List(fields.Nested(CouponCreatePartialValidation(
     )), required=True, validate=validate.Length(min=1))
 
 
-class ProductCreatePayloadWithFullValidation(Schema):
+class ProductCreateFullValidation(Schema):
     name = fields.Str(required=True, validate=validate.Length(max=255))
     sku = fields.Str(required=True, validate=validate.Length(max=255))
     regular_price = fields.Decimal(
