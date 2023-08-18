@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from marshmallow import Schema, ValidationError, fields, validate
+from marshmallow import Schema, ValidationError, fields, validate, validates_schema
 
 
 class DateOrDatetimeField(fields.Field):
@@ -60,3 +60,26 @@ class ProductTagCategoryCouponCreatePayloadWithPartialValidation(ProductCreatePa
 
     coupons = fields.List(fields.Nested(CouponCreatePAyloadWithPartialValidation(
     )), required=True, validate=validate.Length(min=1))
+
+
+class ProductCreatePayloadWithFullValidation(Schema):
+    name = fields.Str(required=True, validate=validate.Length(max=255))
+    sku = fields.Str(required=True, validate=validate.Length(max=255))
+    regular_price = fields.Decimal(
+        required=True, places=4, validate=validate.Range(min=0))
+    discount_price = fields.Decimal(
+        required=True, places=4, validate=validate.Range(min=0))
+    quantity = fields.Int(
+        required=True, validate=validate.Range(min=0, max=9999))
+    description = fields.Str(
+        required=True, validate=validate.Length(max=1000))
+    weight = fields.Decimal(required=True, places=4,
+                            validate=validate.Range(min=0, max=1000))
+    note = fields.Str(required=True, validate=validate.Length(max=255))
+    published = fields.Boolean(required=False)
+
+    @validates_schema
+    def validate_max_discount_price(self, data, **kwargs):
+        if data['discount_price'] > data['regular_price']:
+            raise ValidationError(
+                'discount_price must be less than or equal to regular_price')

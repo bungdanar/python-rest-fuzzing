@@ -4,7 +4,7 @@ from marshmallow import ValidationError
 
 from common.db import db
 from common.handle_validation_err import handle_ma_validation_err
-from common.ma_request_schema import ProductCreatePayloadWithPartialValidation
+from common.ma_request_schema import ProductCreatePayloadWithFullValidation, ProductCreatePayloadWithPartialValidation
 from common.response_schema import product_res_schema
 from models.product import ProductModel
 
@@ -36,6 +36,19 @@ class ProductWithPartialMaValidationResource(Resource):
 
         try:
             validationResult = ProductCreatePayloadWithPartialValidation().load(data)
+        except ValidationError as err:
+            handle_ma_validation_err(err)
+
+        product = _handle_insert_product(validationResult)
+        return _generate_res_for_created_product(product)
+
+
+class ProductWithFullMaValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = ProductCreatePayloadWithFullValidation().load(data)
         except ValidationError as err:
             handle_ma_validation_err(err)
 
