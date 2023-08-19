@@ -1,9 +1,11 @@
 from decimal import Decimal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 
 
 class ProductCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
     name: str
     sku: str
     regular_price: Decimal
@@ -16,6 +18,8 @@ class ProductCreatePartialPydanticValidation(BaseModel):
 
 
 class ProductCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
     name: str = Field(max_length=255)
     sku: str = Field(max_length=255)
     regular_price: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
