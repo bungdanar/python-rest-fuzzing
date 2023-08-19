@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import List
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict
 
@@ -15,6 +16,18 @@ class ProductCreatePartialPydanticValidation(BaseModel):
     weight: Decimal
     note: str
     published: bool = False
+
+
+class CategoryCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    name: str
+    description: str
+
+
+class ProductTagCategoryPartialPydanticValidation(ProductCreatePartialPydanticValidation):
+    tags: List[str] = Field(min_length=1)
+    category: CategoryCreatePartialPydanticValidation
 
 
 class ProductCreateFullPydanticValidation(BaseModel):
