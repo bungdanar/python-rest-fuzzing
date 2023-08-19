@@ -6,7 +6,7 @@ from pydantic import ValidationError as PydanticValidationError
 from common.db import db
 from common.handle_validation_err import handle_ma_validation_err, handle_pydantic_validation_err
 from common.ma_request_schema import ProductCreateFullMaValidation, ProductCreatePartialMaValidation
-from common.pydantic_request_schema import ProductCreatePartialPydanticValidation
+from common.pydantic_request_schema import ProductCreateFullPydanticValidation, ProductCreatePartialPydanticValidation
 from common.response_schema import product_res_schema
 from models.product import ProductModel
 
@@ -64,6 +64,20 @@ class ProductWithPartialPydanticValidationResource(Resource):
 
         try:
             validationResult = ProductCreatePartialPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        product = _handle_insert_product(validationResult.model_dump())
+        return _generate_res_for_created_product(product)
+
+
+class ProductWithFullPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = ProductCreateFullPydanticValidation.model_validate(
                 data, strict=False)
         except PydanticValidationError as err:
             handle_pydantic_validation_err(err)
