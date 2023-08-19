@@ -83,3 +83,15 @@ class ProductCreateFullValidation(Schema):
         if data['discount_price'] > data['regular_price']:
             raise ValidationError(
                 'discount_price must be less than or equal to regular_price')
+
+
+class CategoryCreateFullValidation(Schema):
+    name = fields.Str(required=True, validate=validate.Length(max=255))
+    description = fields.Str(required=True, validate=validate.Length(max=1000))
+
+
+class ProductTagCategoryCreateFullValidation(ProductCreateFullValidation):
+    tags = fields.List(fields.Str(required=True, validate=validate.Length(max=255)),
+                       required=True, validate=validate.Length(min=1))
+    category = fields.Nested(
+        CategoryCreateFullValidation(), required=True)
