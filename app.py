@@ -5,7 +5,7 @@ from flask_restful import Api
 
 from common.db import db
 from common.ma import ma
-from resources.product import ProductResource, ProductWithFullMaValidationResource, ProductWithPartialMaValidationResource
+from resources.product import ProductResource, ProductWithFullMaValidationResource, ProductWithPartialMaValidationResource, ProductWithPartialPydanticValidationResource
 from resources.product_tag_category import ProductTagCategoryResource, ProductTagCategoryWithFullMaValidationResource, ProductTagCategoryWithPartialMaValidationResource
 from resources.product_tag_category_coupon import ProductTagCategoryCouponResource, ProductTagCategoryCouponWithFullMaValidationResource, ProductTagCategoryCouponWithPartialMaValidationResource
 from resources.test import Test
@@ -28,7 +28,9 @@ def create_app(db_url=None):
 
     # api.add_resource(ProductResource, '/api/product')
     # api.add_resource(ProductWithPartialMaValidationResource, '/api/product')
-    api.add_resource(ProductWithFullMaValidationResource, '/api/product')
+    # api.add_resource(ProductWithFullMaValidationResource, '/api/product')
+    api.add_resource(
+        ProductWithPartialPydanticValidationResource, '/api/product')
 
     # api.add_resource(ProductTagCategoryResource, '/api/product-tag-category')
     # api.add_resource(
