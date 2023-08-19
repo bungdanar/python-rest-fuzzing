@@ -16,12 +16,12 @@ class DateOrDatetimeField(fields.Field):
                 raise ValidationError("Invalid date/datetime format")
 
 
-class CategoryCreatePartialValidation(Schema):
+class CategoryCreatePartialMaValidation(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
 
 
-class CouponCreatePartialValidation(Schema):
+class CouponCreatePartialMaValidation(Schema):
     code = fields.Str(required=True)
     description = fields.Str(required=True)
     discount_value = fields.Decimal(required=True)
@@ -32,7 +32,7 @@ class CouponCreatePartialValidation(Schema):
     end_date = DateOrDatetimeField(required=True)
 
 
-class ProductCreatePartialValidation(Schema):
+class ProductCreatePartialMaValidation(Schema):
     name = fields.Str(required=True)
     sku = fields.Str(required=True)
     regular_price = fields.Decimal(required=True)
@@ -44,25 +44,25 @@ class ProductCreatePartialValidation(Schema):
     published = fields.Boolean(required=False)
 
 
-class ProductTagCategoryCreatePartialValidation(ProductCreatePartialValidation):
+class ProductTagCategoryCreatePartialMaValidation(ProductCreatePartialMaValidation):
     tags = fields.List(fields.Str(required=True),
                        required=True, validate=validate.Length(min=1))
     category = fields.Nested(
-        CategoryCreatePartialValidation(), required=True)
+        CategoryCreatePartialMaValidation(), required=True)
 
 
-class ProductTagCategoryCouponCreatePartialValidation(ProductCreatePartialValidation):
+class ProductTagCategoryCouponCreatePartialMaValidation(ProductCreatePartialMaValidation):
     tags = fields.List(fields.Str(required=True),
                        required=True, validate=validate.Length(min=1))
 
-    categories = fields.List(fields.Nested(CategoryCreatePartialValidation(
+    categories = fields.List(fields.Nested(CategoryCreatePartialMaValidation(
     )), required=True, validate=validate.Length(min=1))
 
-    coupons = fields.List(fields.Nested(CouponCreatePartialValidation(
+    coupons = fields.List(fields.Nested(CouponCreatePartialMaValidation(
     )), required=True, validate=validate.Length(min=1))
 
 
-class ProductCreateFullValidation(Schema):
+class ProductCreateFullMaValidation(Schema):
     name = fields.Str(required=True, validate=validate.Length(max=255))
     sku = fields.Str(required=True, validate=validate.Length(max=255))
     regular_price = fields.Decimal(
@@ -85,12 +85,12 @@ class ProductCreateFullValidation(Schema):
                 'discount_price must be less than or equal to regular_price')
 
 
-class CategoryCreateFullValidation(Schema):
+class CategoryCreateFullMaValidation(Schema):
     name = fields.Str(required=True, validate=validate.Length(max=255))
     description = fields.Str(required=True, validate=validate.Length(max=1000))
 
 
-class CouponCreateFullValidation(Schema):
+class CouponCreateFullMaValidation(Schema):
     code = fields.Str(required=True, validate=validate.Length(max=255))
     description = fields.Str(required=True, validate=validate.Length(max=1000))
     discount_value = fields.Decimal(required=True, places=2,
@@ -115,19 +115,19 @@ class CouponCreateFullValidation(Schema):
                 'end_date must be greater than or equal to start_date')
 
 
-class ProductTagCategoryCreateFullValidation(ProductCreateFullValidation):
+class ProductTagCategoryCreateFullMaValidation(ProductCreateFullMaValidation):
     tags = fields.List(fields.Str(required=True, validate=validate.Length(max=255)),
                        required=True, validate=validate.Length(min=1))
     category = fields.Nested(
-        CategoryCreateFullValidation(), required=True)
+        CategoryCreateFullMaValidation(), required=True)
 
 
-class ProductTagCategoryCouponCreateFullValidation(ProductCreateFullValidation):
+class ProductTagCategoryCouponCreateFullMaValidation(ProductCreateFullMaValidation):
     tags = fields.List(fields.Str(required=True, validate=validate.Length(max=255)),
                        required=True, validate=validate.Length(min=1))
 
-    categories = fields.List(fields.Nested(CategoryCreateFullValidation(
+    categories = fields.List(fields.Nested(CategoryCreateFullMaValidation(
     )), required=True, validate=validate.Length(min=1))
 
-    coupons = fields.List(fields.Nested(CouponCreateFullValidation(
+    coupons = fields.List(fields.Nested(CouponCreateFullMaValidation(
     )), required=True, validate=validate.Length(min=1))

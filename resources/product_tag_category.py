@@ -4,7 +4,7 @@ from flask import jsonify, request
 from flask_restful import Resource, abort
 from marshmallow import ValidationError
 from common.handle_validation_err import handle_ma_validation_err
-from common.ma_request_schema import ProductTagCategoryCreateFullValidation, ProductTagCategoryCreatePartialValidation
+from common.ma_request_schema import ProductTagCategoryCreateFullMaValidation, ProductTagCategoryCreatePartialMaValidation
 
 from models.category import CategoryModel
 from models.product import ProductModel
@@ -53,7 +53,7 @@ class ProductTagCategoryWithPartialMaValidationResource(Resource):
         data = request.get_json()
 
         try:
-            validationResult = ProductTagCategoryCreatePartialValidation().load(data)
+            validationResult = ProductTagCategoryCreatePartialMaValidation().load(data)
         except ValidationError as err:
             handle_ma_validation_err(err)
 
@@ -66,7 +66,7 @@ class ProductTagCategoryWithFullMaValidationResource(Resource):
         data = request.get_json()
 
         try:
-            validationResult = ProductTagCategoryCreateFullValidation().load(data)
+            validationResult = ProductTagCategoryCreateFullMaValidation().load(data)
         except ValidationError as err:
             handle_ma_validation_err(err)
 
