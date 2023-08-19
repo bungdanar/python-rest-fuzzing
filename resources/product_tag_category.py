@@ -6,7 +6,7 @@ from marshmallow import ValidationError as MaValidationError
 from pydantic import ValidationError as PydanticValidationError
 from common.handle_validation_err import handle_ma_validation_err, handle_pydantic_validation_err
 from common.ma_request_schema import ProductTagCategoryCreateFullMaValidation, ProductTagCategoryCreatePartialMaValidation
-from common.pydantic_request_schema import ProductTagCategoryPartialPydanticValidation
+from common.pydantic_request_schema import ProductTagCategoryCreateFullPydanticValidation, ProductTagCategoryCreatePartialPydanticValidation
 
 from models.category import CategoryModel
 from models.product import ProductModel
@@ -81,8 +81,22 @@ class ProductTagCategoryWithPartialPydanticValidationResource(Resource):
         data = request.get_json()
 
         try:
-            validationResult = ProductTagCategoryPartialPydanticValidation.model_validate(
-                data)
+            validationResult = ProductTagCategoryCreatePartialPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        product = _handle_insert_product(validationResult.model_dump())
+        return _generate_res_for_created_product(product)
+
+
+class ProductTagCategoryWithFullPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = ProductTagCategoryCreateFullPydanticValidation.model_validate(
+                data, strict=False)
         except PydanticValidationError as err:
             handle_pydantic_validation_err(err)
 

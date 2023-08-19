@@ -6,7 +6,7 @@ from flask_restful import Api
 from common.db import db
 from common.ma import ma
 from resources.product import ProductResource, ProductWithFullMaValidationResource, ProductWithFullPydanticValidationResource, ProductWithPartialMaValidationResource, ProductWithPartialPydanticValidationResource
-from resources.product_tag_category import ProductTagCategoryResource, ProductTagCategoryWithFullMaValidationResource, ProductTagCategoryWithPartialMaValidationResource, ProductTagCategoryWithPartialPydanticValidationResource
+from resources.product_tag_category import ProductTagCategoryResource, ProductTagCategoryWithFullMaValidationResource, ProductTagCategoryWithFullPydanticValidationResource, ProductTagCategoryWithPartialMaValidationResource, ProductTagCategoryWithPartialPydanticValidationResource
 from resources.product_tag_category_coupon import ProductTagCategoryCouponResource, ProductTagCategoryCouponWithFullMaValidationResource, ProductTagCategoryCouponWithPartialMaValidationResource
 from resources.test import Test
 import models
@@ -39,8 +39,10 @@ def create_app(db_url=None):
     #     ProductTagCategoryWithPartialMaValidationResource, '/api/product-tag-category')
     # api.add_resource(
     #     ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
+    # api.add_resource(
+    #     ProductTagCategoryWithPartialPydanticValidationResource, '/api/product-tag-category')
     api.add_resource(
-        ProductTagCategoryWithPartialPydanticValidationResource, '/api/product-tag-category')
+        ProductTagCategoryWithFullPydanticValidationResource, '/api/product-tag-category')
 
     # api.add_resource(ProductTagCategoryCouponResource,
     #                  '/api/product-tag-category-coupon')

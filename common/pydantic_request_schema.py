@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict
+from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
 
 
 class ProductCreatePartialPydanticValidation(BaseModel):
@@ -25,7 +25,7 @@ class CategoryCreatePartialPydanticValidation(BaseModel):
     description: str
 
 
-class ProductTagCategoryPartialPydanticValidation(ProductCreatePartialPydanticValidation):
+class ProductTagCategoryCreatePartialPydanticValidation(ProductCreatePartialPydanticValidation):
     tags: List[str] = Field(min_length=1)
     category: CategoryCreatePartialPydanticValidation
 
@@ -50,3 +50,15 @@ class ProductCreateFullPydanticValidation(BaseModel):
                 'discount_price must be less than or equal to regular_price')
 
         return self
+
+
+class CategoryCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    name: str = Field(max_length=255)
+    description: str = Field(max_length=1000)
+
+
+class ProductTagCategoryCreateFullPydanticValidation(ProductCreateFullPydanticValidation):
+    tags: List[constr(max_length=255)] = Field(min_length=1)
+    category: CategoryCreateFullPydanticValidation
