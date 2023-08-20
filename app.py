@@ -24,35 +24,50 @@ def create_app(db_url=None):
     ma.init_app(app)
     api = Api(app)
 
+    VALIDATION_MODE = os.getenv("VALIDATION", "no")
+
     api.add_resource(Test, '/')
 
-    # api.add_resource(ProductResource, '/api/product')
-    # api.add_resource(ProductWithPartialMaValidationResource, '/api/product')
-    # api.add_resource(ProductWithFullMaValidationResource, '/api/product')
-    # api.add_resource(
-    #     ProductWithPartialPydanticValidationResource, '/api/product')
-    api.add_resource(
-        ProductWithFullPydanticValidationResource, '/api/product')
+    if VALIDATION_MODE == 'ma-partial':
+        api.add_resource(
+            ProductWithPartialMaValidationResource, '/api/product')
+        api.add_resource(
+            ProductTagCategoryWithPartialMaValidationResource, '/api/product-tag-category')
+        api.add_resource(ProductTagCategoryCouponWithPartialMaValidationResource,
+                         '/api/product-tag-category-coupon')
 
-    # api.add_resource(ProductTagCategoryResource, '/api/product-tag-category')
-    # api.add_resource(
-    #     ProductTagCategoryWithPartialMaValidationResource, '/api/product-tag-category')
-    # api.add_resource(
-    #     ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
-    # api.add_resource(
-    #     ProductTagCategoryWithPartialPydanticValidationResource, '/api/product-tag-category')
-    api.add_resource(
-        ProductTagCategoryWithFullPydanticValidationResource, '/api/product-tag-category')
+    elif VALIDATION_MODE == 'ma-full':
+        api.add_resource(ProductWithFullMaValidationResource, '/api/product')
+        api.add_resource(
+            ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
+        api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
+                         '/api/product-tag-category-coupon')
 
-    # api.add_resource(ProductTagCategoryCouponResource,
-    #                  '/api/product-tag-category-coupon')
-    # api.add_resource(ProductTagCategoryCouponWithPartialMaValidationResource,
-    #                  '/api/product-tag-category-coupon')
-    # api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
-    #                  '/api/product-tag-category-coupon')
-    # api.add_resource(ProductTagCategoryCouponWithPartialPydanticValidationResource,
-    #                  '/api/product-tag-category-coupon')
-    api.add_resource(ProductTagCategoryCouponWithFullPydanticValidationResource,
-                     '/api/product-tag-category-coupon')
+    elif VALIDATION_MODE == 'pydantic-partial':
+        api.add_resource(
+            ProductWithPartialPydanticValidationResource, '/api/product')
+        api.add_resource(
+            ProductTagCategoryWithPartialPydanticValidationResource, '/api/product-tag-category')
+        api.add_resource(ProductTagCategoryCouponWithPartialPydanticValidationResource,
+                         '/api/product-tag-category-coupon')
+
+    elif VALIDATION_MODE == 'pydantic-full':
+        api.add_resource(
+            ProductWithFullPydanticValidationResource, '/api/product')
+        api.add_resource(
+            ProductTagCategoryWithFullPydanticValidationResource, '/api/product-tag-category')
+        api.add_resource(ProductTagCategoryCouponWithFullPydanticValidationResource,
+                         '/api/product-tag-category-coupon')
+
+    else:
+        api.add_resource(ProductResource, '/api/product')
+        api.add_resource(ProductTagCategoryResource,
+                         '/api/product-tag-category')
+        api.add_resource(ProductTagCategoryCouponResource,
+                         '/api/product-tag-category-coupon')
+
+        VALIDATION_MODE = 'no'
+
+    app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 
     return app
