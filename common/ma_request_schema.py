@@ -1,19 +1,12 @@
-from datetime import datetime
-
 from marshmallow import Schema, ValidationError, fields, validate, validates_schema
 
 
 class DateOrDatetimeField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         try:
-            # Try parsing as datetime first
-            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S').date()
-        except ValueError:
-            try:
-                # Try parsing as date
-                return datetime.strptime(value, '%Y-%m-%d').date()
-            except ValueError:
-                raise ValidationError("Invalid date/datetime format")
+            return fields.DateTime()._deserialize(value, attr, data, **kwargs)
+        except:
+            return fields.Date()._deserialize(value, attr, data, **kwargs)
 
 
 class CategoryCreatePartialMaValidation(Schema):
