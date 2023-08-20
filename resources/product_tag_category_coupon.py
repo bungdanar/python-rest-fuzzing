@@ -2,9 +2,11 @@ from operator import itemgetter
 
 from flask import jsonify, request
 from flask_restful import Resource
-from marshmallow import ValidationError
-from common.handle_validation_err import handle_ma_validation_err
+from marshmallow import ValidationError as MaValidationError
+from pydantic import ValidationError as PydanticValidationError
+from common.handle_validation_err import handle_ma_validation_err, handle_pydantic_validation_err
 from common.ma_request_schema import ProductTagCategoryCouponCreateFullMaValidation, ProductTagCategoryCouponCreatePartialMaValidation
+from common.pydantic_request_schema import ProductTagCategoryCouponCreatePartialPydanticValidation
 
 from models.category import CategoryModel
 from models.product import ProductModel
@@ -60,7 +62,7 @@ class ProductTagCategoryCouponWithPartialMaValidationResource(Resource):
 
         try:
             validationResult = ProductTagCategoryCouponCreatePartialMaValidation().load(data)
-        except ValidationError as err:
+        except MaValidationError as err:
             handle_ma_validation_err(err)
 
         product = _handle_insert_product(validationResult)
@@ -73,8 +75,22 @@ class ProductTagCategoryCouponWithFullMaValidationResource(Resource):
 
         try:
             validationResult = ProductTagCategoryCouponCreateFullMaValidation().load(data)
-        except ValidationError as err:
+        except MaValidationError as err:
             handle_ma_validation_err(err)
 
         product = _handle_insert_product(validationResult)
+        return _generate_res_for_created_product(product)
+
+
+class ProductTagCategoryCouponWithPartialPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = ProductTagCategoryCouponCreatePartialPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        product = _handle_insert_product(validationResult.model_dump())
         return _generate_res_for_created_product(product)

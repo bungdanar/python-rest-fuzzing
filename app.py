@@ -7,7 +7,7 @@ from common.db import db
 from common.ma import ma
 from resources.product import ProductResource, ProductWithFullMaValidationResource, ProductWithFullPydanticValidationResource, ProductWithPartialMaValidationResource, ProductWithPartialPydanticValidationResource
 from resources.product_tag_category import ProductTagCategoryResource, ProductTagCategoryWithFullMaValidationResource, ProductTagCategoryWithFullPydanticValidationResource, ProductTagCategoryWithPartialMaValidationResource, ProductTagCategoryWithPartialPydanticValidationResource
-from resources.product_tag_category_coupon import ProductTagCategoryCouponResource, ProductTagCategoryCouponWithFullMaValidationResource, ProductTagCategoryCouponWithPartialMaValidationResource
+from resources.product_tag_category_coupon import ProductTagCategoryCouponResource, ProductTagCategoryCouponWithFullMaValidationResource, ProductTagCategoryCouponWithPartialMaValidationResource, ProductTagCategoryCouponWithPartialPydanticValidationResource
 from resources.test import Test
 import models
 
@@ -48,7 +48,9 @@ def create_app(db_url=None):
     #                  '/api/product-tag-category-coupon')
     # api.add_resource(ProductTagCategoryCouponWithPartialMaValidationResource,
     #                  '/api/product-tag-category-coupon')
-    api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
+    # api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
+    #                  '/api/product-tag-category-coupon')
+    api.add_resource(ProductTagCategoryCouponWithPartialPydanticValidationResource,
                      '/api/product-tag-category-coupon')
 
     return app

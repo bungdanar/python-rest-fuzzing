@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime, date
 from typing import List
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
@@ -25,9 +26,29 @@ class CategoryCreatePartialPydanticValidation(BaseModel):
     description: str
 
 
+class CouponCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    code: str
+    description: str
+    discount_value: Decimal
+    discount_type: str
+    times_used: int = 0
+    max_usage: int
+    start_date: datetime | date
+    end_date: datetime | date
+
+
 class ProductTagCategoryCreatePartialPydanticValidation(ProductCreatePartialPydanticValidation):
     tags: List[str] = Field(min_length=1)
     category: CategoryCreatePartialPydanticValidation
+
+
+class ProductTagCategoryCouponCreatePartialPydanticValidation(ProductCreatePartialPydanticValidation):
+    tags: List[str] = Field(min_length=1)
+    categories: List[CategoryCreatePartialPydanticValidation] = Field(
+        min_length=1)
+    coupons: List[CouponCreatePartialPydanticValidation] = Field(min_length=1)
 
 
 class ProductCreateFullPydanticValidation(BaseModel):
