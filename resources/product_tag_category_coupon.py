@@ -6,7 +6,7 @@ from marshmallow import ValidationError as MaValidationError
 from pydantic import ValidationError as PydanticValidationError
 from common.handle_validation_err import handle_ma_validation_err, handle_pydantic_validation_err
 from common.ma_request_schema import ProductTagCategoryCouponCreateFullMaValidation, ProductTagCategoryCouponCreatePartialMaValidation
-from common.pydantic_request_schema import ProductTagCategoryCouponCreatePartialPydanticValidation
+from common.pydantic_request_schema import ProductTagCategoryCouponCreateFullPydanticValidation, ProductTagCategoryCouponCreatePartialPydanticValidation
 
 from models.category import CategoryModel
 from models.product import ProductModel
@@ -88,6 +88,20 @@ class ProductTagCategoryCouponWithPartialPydanticValidationResource(Resource):
 
         try:
             validationResult = ProductTagCategoryCouponCreatePartialPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        product = _handle_insert_product(validationResult.model_dump())
+        return _generate_res_for_created_product(product)
+
+
+class ProductTagCategoryCouponWithFullPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = ProductTagCategoryCouponCreateFullPydanticValidation.model_validate(
                 data, strict=False)
         except PydanticValidationError as err:
             handle_pydantic_validation_err(err)
