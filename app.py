@@ -1,8 +1,10 @@
 import os
+import time
 
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api
 
+from common.custom_logger import create_res_time_logger
 from common.db import db
 from common.ma import ma
 from resources.product import (
@@ -43,6 +45,21 @@ def create_app(db_url=None):
     api = Api(app)
 
     VALIDATION_MODE = os.getenv("VALIDATION", "no")
+
+    res_time_logger = create_res_time_logger()
+
+    @app.before_request
+    def start_timer():
+        request.start_time = time.time()
+
+    @app.after_request
+    def log_response_time(response):
+        if hasattr(request, 'start_time'):
+            res_time = (time.time() - request.start_time) * 1000
+            res_time_logger.info(
+                f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
+
+        return response
 
     api.add_resource(Test, '/')
 
