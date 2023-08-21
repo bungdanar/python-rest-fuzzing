@@ -1,8 +1,9 @@
 import os
 import time
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Api
+from werkzeug.exceptions import HTTPException
 
 from common.custom_logger import create_res_time_logger
 from common.db import db
@@ -35,6 +36,7 @@ import models
 def create_app(db_url=None):
     app = Flask(__name__)
 
+    app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
         "DATABASE_URL", "sqlite:///data.db")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -60,6 +62,18 @@ def create_app(db_url=None):
                 f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
 
         return response
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        if isinstance(e, HTTPException):
+            return e
+
+        print('EXCEPTION: ', e)
+
+        return jsonify({
+            "statusCode": 500,
+            "message": "Internal Server Error"
+        }), 500
 
     api.add_resource(Test, '/')
 
