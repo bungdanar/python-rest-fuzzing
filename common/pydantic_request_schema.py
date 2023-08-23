@@ -54,14 +54,14 @@ class ProductTagCategoryCouponCreatePartialPydanticValidation(ProductCreateParti
 class ProductCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    name: str = Field(max_length=255)
-    sku: str = Field(max_length=255)
+    name: str = Field(min_length=3, max_length=255)
+    sku: str = Field(min_length=3, max_length=255)
     regular_price: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
     discount_price: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
     quantity: int = Field(ge=0, le=9999)
-    description: str = Field(max_length=1000)
+    description: str = Field(min_length=3, max_length=1000)
     weight: Decimal = Field(ge=0, le=1000, max_digits=8, decimal_places=4)
-    note: str = Field(max_length=255)
+    note: str = Field(min_length=3, max_length=255)
     published: bool = False
 
     @model_validator(mode='after')
@@ -76,18 +76,18 @@ class ProductCreateFullPydanticValidation(BaseModel):
 class CategoryCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    name: str = Field(max_length=255)
-    description: str = Field(max_length=1000)
+    name: str = Field(min_length=3, max_length=255)
+    description: str = Field(min_length=3, max_length=1000)
 
 
 class CouponCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    code: str = Field(max_length=255)
-    description: str = Field(max_length=1000)
+    code: str = Field(min_length=3, max_length=255)
+    description: str = Field(min_length=3, max_length=1000)
     discount_value: Decimal = Field(
         ge=0, le=100, max_digits=5, decimal_places=2)
-    discount_type: str = Field(max_length=255)
+    discount_type: str = Field(min_length=3, max_length=255)
     times_used: int = Field(ge=0, default=0)
     max_usage: int = Field(ge=0)
     start_date: datetime | date
@@ -111,12 +111,12 @@ class CouponCreateFullPydanticValidation(BaseModel):
 
 
 class ProductTagCategoryCreateFullPydanticValidation(ProductCreateFullPydanticValidation):
-    tags: List[constr(max_length=255)] = Field(min_length=1)
+    tags: List[constr(min_length=3, max_length=255)] = Field(min_length=1)
     category: CategoryCreateFullPydanticValidation
 
 
 class ProductTagCategoryCouponCreateFullPydanticValidation(ProductCreateFullPydanticValidation):
-    tags: List[constr(max_length=255)] = Field(min_length=1)
+    tags: List[constr(min_length=3, max_length=255)] = Field(min_length=1)
     categories: List[CategoryCreateFullPydanticValidation] = Field(
         min_length=1)
     coupons: List[CouponCreateFullPydanticValidation] = Field(min_length=1)

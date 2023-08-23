@@ -56,8 +56,8 @@ class ProductTagCategoryCouponCreatePartialMaValidation(ProductCreatePartialMaVa
 
 
 class ProductCreateFullMaValidation(Schema):
-    name = fields.Str(required=True, validate=validate.Length(max=255))
-    sku = fields.Str(required=True, validate=validate.Length(max=255))
+    name = fields.Str(required=True, validate=validate.Length(min=3, max=255))
+    sku = fields.Str(required=True, validate=validate.Length(min=3, max=255))
     regular_price = fields.Decimal(
         required=True, places=4, validate=validate.Range(min=0))
     discount_price = fields.Decimal(
@@ -65,10 +65,10 @@ class ProductCreateFullMaValidation(Schema):
     quantity = fields.Int(
         required=True, validate=validate.Range(min=0, max=9999))
     description = fields.Str(
-        required=True, validate=validate.Length(max=1000))
+        required=True, validate=validate.Length(min=3, max=1000))
     weight = fields.Decimal(required=True, places=4,
                             validate=validate.Range(min=0, max=1000))
-    note = fields.Str(required=True, validate=validate.Length(max=255))
+    note = fields.Str(required=True, validate=validate.Length(min=3, max=255))
     published = fields.Boolean(required=False)
 
     @validates_schema
@@ -79,17 +79,19 @@ class ProductCreateFullMaValidation(Schema):
 
 
 class CategoryCreateFullMaValidation(Schema):
-    name = fields.Str(required=True, validate=validate.Length(max=255))
-    description = fields.Str(required=True, validate=validate.Length(max=1000))
+    name = fields.Str(required=True, validate=validate.Length(min=3, max=255))
+    description = fields.Str(
+        required=True, validate=validate.Length(min=3, max=1000))
 
 
 class CouponCreateFullMaValidation(Schema):
-    code = fields.Str(required=True, validate=validate.Length(max=255))
-    description = fields.Str(required=True, validate=validate.Length(max=1000))
+    code = fields.Str(required=True, validate=validate.Length(min=3, max=255))
+    description = fields.Str(
+        required=True, validate=validate.Length(min=3, max=1000))
     discount_value = fields.Decimal(required=True, places=2,
                                     validate=validate.Range(min=0, max=100))
     discount_type = fields.Str(
-        required=True, validate=validate.Length(max=255))
+        required=True, validate=validate.Length(min=3, max=255))
     times_used = fields.Int(required=False, validate=validate.Range(min=0))
     max_usage = fields.Int(required=True, validate=validate.Range(min=0))
     start_date = DateOrDatetimeField(required=True)
@@ -109,14 +111,14 @@ class CouponCreateFullMaValidation(Schema):
 
 
 class ProductTagCategoryCreateFullMaValidation(ProductCreateFullMaValidation):
-    tags = fields.List(fields.Str(required=True, validate=validate.Length(max=255)),
+    tags = fields.List(fields.Str(required=True, validate=validate.Length(min=3, max=255)),
                        required=True, validate=validate.Length(min=1))
     category = fields.Nested(
         CategoryCreateFullMaValidation(), required=True)
 
 
 class ProductTagCategoryCouponCreateFullMaValidation(ProductCreateFullMaValidation):
-    tags = fields.List(fields.Str(required=True, validate=validate.Length(max=255)),
+    tags = fields.List(fields.Str(required=True, validate=validate.Length(min=3, max=255)),
                        required=True, validate=validate.Length(min=1))
 
     categories = fields.List(fields.Nested(CategoryCreateFullMaValidation(
