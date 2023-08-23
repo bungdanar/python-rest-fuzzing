@@ -10,7 +10,7 @@ class CouponModel(db.Model):
     code = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     discount_value = db.Column(DECIMAL(precision=5, scale=2,
-                                       unsigned=True), nullable=False)
+                                       unsigned=True, asdecimal=False), nullable=False)
     discount_type = db.Column(db.String(255), nullable=False)
     times_used = db.Column(INTEGER(unsigned=True), nullable=False, default=0)
     max_usage = db.Column(INTEGER(unsigned=True), nullable=False)

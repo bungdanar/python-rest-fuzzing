@@ -10,13 +10,13 @@ class ProductModel(db.Model):
     name = db.Column(db.String(255), nullable=False)
     sku = db.Column(db.String(255), nullable=False)
     regular_price = db.Column(
-        DECIMAL(precision=19, scale=4, unsigned=True), nullable=False)
+        DECIMAL(precision=19, scale=4, unsigned=True, asdecimal=False), nullable=False)
     discount_price = db.Column(
-        DECIMAL(precision=19, scale=4, unsigned=True), nullable=False)
+        DECIMAL(precision=19, scale=4, unsigned=True, asdecimal=False), nullable=False)
     quantity = db.Column(INTEGER(unsigned=True), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     weight = db.Column(DECIMAL(precision=8, scale=4,
-                       unsigned=True), nullable=False)
+                       unsigned=True, asdecimal=False), nullable=False)
     note = db.Column(db.String(255), nullable=False)
     published = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(
