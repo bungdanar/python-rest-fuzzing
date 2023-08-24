@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  web-api:
+    image: bungdanar/python-rest-fuzzing
+    environment:
+      - TZ=Asia/Jakarta
+    restart: 'no'
+    build: ./
+    volumes:
+      - './logs:/app/logs'
+    env_file:
+      - .env
+    ports:
+      - '${DOCKER_PORT}:5000'
+    command:
+      [
+        'gunicorn',
+        -w,
+        '4',
+        '-b',
+        '0.0.0.0:5000',
+        'app:create_app()',
+        '--access-logfile',
+        '-',
+      ]
