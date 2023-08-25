@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
 
-from common.custom_logger import create_res_time_logger
+from common.custom_logger import create_res_time_logger, create_res_time_with_req_body_logger
 from common.db import db
 from common.ma import ma
 from resources.product import (
@@ -49,6 +49,7 @@ def create_app(db_url=None):
     VALIDATION_MODE = os.getenv("VALIDATION", "no")
 
     res_time_logger = create_res_time_logger()
+    res_time_with_req_body_logger = create_res_time_with_req_body_logger()
 
     @app.before_request
     def start_timer():
@@ -60,6 +61,9 @@ def create_app(db_url=None):
             res_time = (time.time() - request.start_time) * 1000
             res_time_logger.info(
                 f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
+
+            res_time_with_req_body_logger.info(
+                f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE} payload={str(request.get_json())}')
 
         return response
 

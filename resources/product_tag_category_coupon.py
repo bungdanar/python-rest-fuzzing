@@ -1,4 +1,5 @@
 from operator import itemgetter
+from copy import deepcopy
 
 from flask import jsonify, request
 from flask_restful import Resource
@@ -16,7 +17,9 @@ from common.db import db
 from common.response_schema import product_tag_category_coupon_res_schema
 
 
-def _handle_insert_product(data):
+def _handle_insert_product(payload):
+    data = deepcopy(payload)
+
     tags = itemgetter('tags')(data)
     tags = [{'name': t} for t in tags]
     tags = [TagModel(**t) for t in tags]
