@@ -1,5 +1,6 @@
 import os
 import time
+import json
 
 from flask import Flask, request, jsonify
 from flask_restful import Api
@@ -63,7 +64,7 @@ def create_app(db_url=None):
                 f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
 
             res_time_with_req_body_logger.info(
-                f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE} payload={str(request.get_json())}')
+                f" {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE} payload={json.dumps(request.get_json(),separators=(',', ':'))}")
 
         return response
 
