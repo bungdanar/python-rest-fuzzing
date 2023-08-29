@@ -31,7 +31,7 @@ from resources.product_tag_category_coupon import (
 )
 from resources.test import Test
 import models
-from resources.user import UserResource
+from resources.user import UserFullMaValidationResource, UserPartialMaValidationResource, UserResource
 from resources.user_addr_prod import UserAddrProdResource
 from resources.user_addr_prod_ship import UserAddrProdShipResource
 from resources.user_address import UserAddressResource
@@ -89,12 +89,16 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponWithPartialMaValidationResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(UserPartialMaValidationResource, '/api/user')
+
     elif VALIDATION_MODE == 'ma-full':
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
         api.add_resource(
             ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
         api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
                          '/api/product-tag-category-coupon')
+
+        api.add_resource(UserFullMaValidationResource, '/api/user')
 
     elif VALIDATION_MODE == 'pydantic-partial':
         api.add_resource(
@@ -119,9 +123,10 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(UserResource, '/api/user')
+
         VALIDATION_MODE = 'no'
 
-    api.add_resource(UserResource, '/api/user')
     api.add_resource(UserAddressResource, '/api/user-address')
     api.add_resource(UserAddrProdResource, '/api/user-address-product')
     api.add_resource(UserAddrProdShipResource,

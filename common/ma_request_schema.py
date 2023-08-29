@@ -126,3 +126,23 @@ class ProductTagCategoryCouponCreateFullMaValidation(ProductCreateFullMaValidati
 
     coupons = fields.List(fields.Nested(CouponCreateFullMaValidation(
     )), required=True, validate=validate.Length(min=1))
+
+
+class UserCreatePartialMaValidation(Schema):
+    first_name = fields.Str(required=True)
+    last_name = fields.Str(required=True)
+    email = fields.Str(required=True)
+    phone_code = fields.Str(required=True)
+    phone_number = fields.Str(required=True)
+
+
+class UserCreateFullMaValidation(Schema):
+    first_name = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    last_name = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    email = fields.Email(required=True, validate=validate.Length(max=255))
+    phone_code = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{1,3}$'))
+    phone_number = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{4,12}$'))
