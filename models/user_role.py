@@ -13,5 +13,3 @@ class UserRoleModel(db.Model):
         db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(
         db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
-    user = db.relationship("UserModel", back_populates="user_roles")

@@ -19,4 +19,3 @@ class UserModel(db.Model):
 
     roles = db.relationship(
         "RoleModel", back_populates="users", secondary="user_role")
-    user_roles = db.relationship("UserRoleModel", back_populates="user")
