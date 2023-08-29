@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
 PRODUCT_FIELDS = ("id", "name", "sku", "regular_price", "discount_price",
-                  "quantity", "description", "weight", "note", "published", "created_at", "updated_at")
+                  "quantity", "description", "weight", "note", "published", "seller_id", "created_at", "updated_at")
 
 TAG_FIELDS = ("id", "name", "created_at", "updated_at")
 
