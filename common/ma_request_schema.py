@@ -136,6 +136,17 @@ class UserCreatePartialMaValidation(Schema):
     phone_number = fields.Str(required=True)
 
 
+class AddressCreatePartialMaValidation(Schema):
+    street = fields.Str(required=True)
+    city = fields.Str(required=True)
+    country = fields.Str(required=True)
+    postal_code = fields.Str(required=True)
+
+
+class UserAddrCreatePartialMaValidation(UserCreatePartialMaValidation):
+    address = fields.Nested(AddressCreatePartialMaValidation(), required=True)
+
+
 class UserCreateFullMaValidation(Schema):
     first_name = fields.Str(
         required=True, validate=validate.Length(min=3, max=255))
@@ -146,3 +157,17 @@ class UserCreateFullMaValidation(Schema):
         required=True, validate=validate.Regexp('^[0-9]{1,3}$'))
     phone_number = fields.Str(
         required=True, validate=validate.Regexp('^[0-9]{4,12}$'))
+
+
+class AddressCreateFullMaValidation(Schema):
+    street = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    city = fields.Str(required=True, validate=validate.Length(min=3, max=255))
+    country = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    postal_code = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{5}$'))
+
+
+class UserAddrCreateFullMaValidation(UserCreateFullMaValidation):
+    address = fields.Nested(AddressCreateFullMaValidation(), required=True)
