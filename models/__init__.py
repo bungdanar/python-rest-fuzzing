@@ -8,3 +8,4 @@ from models.product_coupon import ProductCouponModel
 from models.user import UserModel
 from models.role import RoleModel
 from models.user_role import UserRoleModel
+from models.address import AddressModel

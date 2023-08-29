@@ -14,6 +14,9 @@ COUPON_FIELDS = ("id", "code", "description", "discount_value",
 USER_FIELDS = ("id", "first_name", "last_name", "email",
                "phone_code", "phone_number", "created_at", "updated_at")
 
+ADDRESS_FIELDS = ("id", "street", "city", "country",
+                  "postal_code", "user_id", "created_at", "updated_at")
+
 
 class TagResponseSchema(Schema):
     class Meta:
@@ -57,6 +60,18 @@ class UserResponseSchema(Schema):
         fields = USER_FIELDS
 
 
+class AddressResponseSchema(Schema):
+    class Meta:
+        fields = ADDRESS_FIELDS
+
+
+class UserAddrResSchema(Schema):
+    class Meta:
+        fields = USER_FIELDS + ('addresses',)
+
+    addresses = fields.Nested(AddressResponseSchema, many=True)
+
+
 product_res_schema = ProductResponseSchema()
 
 product_tag_category_res_schema = ProductTagCategoryResponseSchema()
@@ -68,3 +83,4 @@ product_tag_category_coupon_many_res_schema = ProductTagCategoryCouponResponseSc
     many=True)
 
 user_res_schema = UserResponseSchema()
+user_addr_res_schema = UserAddrResSchema()
