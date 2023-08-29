@@ -31,6 +31,7 @@ from resources.product_tag_category_coupon import (
 )
 from resources.test import Test
 import models
+from resources.user import UserResource
 
 
 def create_app(db_url=None):
@@ -116,6 +117,8 @@ def create_app(db_url=None):
                          '/api/product-tag-category-coupon')
 
         VALIDATION_MODE = 'no'
+
+    api.add_resource(UserResource, '/api/user')
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 

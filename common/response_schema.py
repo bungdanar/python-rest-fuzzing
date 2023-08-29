@@ -11,6 +11,9 @@ CATEGORY_FIELDS = ("id", "name", "description",
 COUPON_FIELDS = ("id", "code", "description", "discount_value",
                  "discount_type", "times_used", "max_usage", "start_date", "end_date", "created_at", "updated_at")
 
+USER_FIELDS = ("id", "first_name", "last_name", "email",
+               "phone_code", "phone_number", "created_at", "updated_at")
+
 
 class TagResponseSchema(Schema):
     class Meta:
@@ -49,6 +52,11 @@ class ProductTagCategoryCouponResponseSchema(Schema):
     coupons = fields.Nested(CouponResponseSchema, many=True)
 
 
+class UserResponseSchema(Schema):
+    class Meta:
+        fields = USER_FIELDS
+
+
 product_res_schema = ProductResponseSchema()
 
 product_tag_category_res_schema = ProductTagCategoryResponseSchema()
@@ -58,3 +66,5 @@ product_tag_category_many_res_schema = ProductTagCategoryResponseSchema(
 product_tag_category_coupon_res_schema = ProductTagCategoryCouponResponseSchema()
 product_tag_category_coupon_many_res_schema = ProductTagCategoryCouponResponseSchema(
     many=True)
+
+user_res_schema = UserResponseSchema()
