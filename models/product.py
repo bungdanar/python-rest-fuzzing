@@ -36,3 +36,4 @@ class ProductModel(db.Model):
         "CouponModel", back_populates="products", secondary="product_coupon")
 
     seller = db.relationship("UserModel", back_populates="products")
+    shippings = db.relationship("ShippingModel", back_populates="product")

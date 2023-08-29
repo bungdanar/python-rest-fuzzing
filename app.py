@@ -33,6 +33,7 @@ from resources.test import Test
 import models
 from resources.user import UserResource
 from resources.user_addr_prod import UserAddrProdResource
+from resources.user_addr_prod_ship import UserAddrProdShipResource
 from resources.user_address import UserAddressResource
 
 
@@ -123,6 +124,8 @@ def create_app(db_url=None):
     api.add_resource(UserResource, '/api/user')
     api.add_resource(UserAddressResource, '/api/user-address')
     api.add_resource(UserAddrProdResource, '/api/user-address-product')
+    api.add_resource(UserAddrProdShipResource,
+                     '/api/user-address-product-shipping')
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 

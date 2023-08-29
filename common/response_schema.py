@@ -17,6 +17,9 @@ USER_FIELDS = ("id", "first_name", "last_name", "email",
 ADDRESS_FIELDS = ("id", "street", "city", "country",
                   "postal_code", "user_id", "created_at", "updated_at")
 
+SHIPPING_FIELDS = ("id", "description", "charge", "free",
+                   "estimated_days", "product_id", "created_at", "updated_at")
+
 
 class TagResponseSchema(Schema):
     class Meta:
@@ -33,9 +36,21 @@ class CouponResponseSchema(Schema):
         fields = COUPON_FIELDS
 
 
+class ShippingResponseSchema(Schema):
+    class Meta:
+        fields = SHIPPING_FIELDS
+
+
 class ProductResponseSchema(Schema):
     class Meta:
         fields = PRODUCT_FIELDS
+
+
+class ProductShippingResponseSchema(Schema):
+    class Meta:
+        fields = PRODUCT_FIELDS + ("shippings",)
+
+    shippings = fields.Nested(ShippingResponseSchema, many=True)
 
 
 class ProductTagCategoryResponseSchema(Schema):
@@ -80,6 +95,14 @@ class UserAddrProdResSchema(Schema):
     products = fields.Nested(ProductResponseSchema, many=True)
 
 
+class UserAddrProdShipResSchema(Schema):
+    class Meta:
+        fields = USER_FIELDS + ('addresses', 'products')
+
+    addresses = fields.Nested(AddressResponseSchema, many=True)
+    products = fields.Nested(ProductShippingResponseSchema, many=True)
+
+
 product_res_schema = ProductResponseSchema()
 
 product_tag_category_res_schema = ProductTagCategoryResponseSchema()
@@ -93,3 +116,4 @@ product_tag_category_coupon_many_res_schema = ProductTagCategoryCouponResponseSc
 user_res_schema = UserResponseSchema()
 user_addr_res_schema = UserAddrResSchema()
 user_addr_prod_res_schema = UserAddrProdResSchema()
+user_addr_prod_ship_res_schema = UserAddrProdShipResSchema()
