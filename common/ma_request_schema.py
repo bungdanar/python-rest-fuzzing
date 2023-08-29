@@ -147,6 +147,13 @@ class UserAddrCreatePartialMaValidation(UserCreatePartialMaValidation):
     address = fields.Nested(AddressCreatePartialMaValidation(), required=True)
 
 
+class UserAddrProdCreatePartialMaValidation(UserCreatePartialMaValidation):
+    addresses = fields.List(fields.Nested(AddressCreatePartialMaValidation(
+    )), required=True, validate=validate.Length(min=1))
+
+    product = fields.Nested(ProductCreatePartialMaValidation(), required=True)
+
+
 class UserCreateFullMaValidation(Schema):
     first_name = fields.Str(
         required=True, validate=validate.Length(min=3, max=255))
@@ -171,3 +178,10 @@ class AddressCreateFullMaValidation(Schema):
 
 class UserAddrCreateFullMaValidation(UserCreateFullMaValidation):
     address = fields.Nested(AddressCreateFullMaValidation(), required=True)
+
+
+class UserAddrProdCreateFullMaValidation(UserCreateFullMaValidation):
+    addresses = fields.List(fields.Nested(AddressCreateFullMaValidation(
+    )), required=True, validate=validate.Length(min=1))
+
+    product = fields.Nested(ProductCreateFullMaValidation(), required=True)

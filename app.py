@@ -31,10 +31,22 @@ from resources.product_tag_category_coupon import (
 )
 from resources.test import Test
 import models
-from resources.user import UserFullMaValidationResource, UserPartialMaValidationResource, UserResource
-from resources.user_addr_prod import UserAddrProdResource
+from resources.user import (
+    UserFullMaValidationResource,
+    UserPartialMaValidationResource,
+    UserResource
+)
+from resources.user_addr_prod import (
+    UserAddrProdFullMaValidationResource,
+    UserAddrProdPartialMaValidationResource,
+    UserAddrProdResource
+)
 from resources.user_addr_prod_ship import UserAddrProdShipResource
-from resources.user_address import UserAddressFullMaValidationResource, UserAddressPartialMaValidationResource, UserAddressResource
+from resources.user_address import (
+    UserAddressFullMaValidationResource,
+    UserAddressPartialMaValidationResource,
+    UserAddressResource
+)
 
 
 def create_app(db_url=None):
@@ -92,6 +104,8 @@ def create_app(db_url=None):
         api.add_resource(UserPartialMaValidationResource, '/api/user')
         api.add_resource(
             UserAddressPartialMaValidationResource, '/api/user-address')
+        api.add_resource(UserAddrProdPartialMaValidationResource,
+                         '/api/user-address-product')
 
     elif VALIDATION_MODE == 'ma-full':
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
@@ -103,6 +117,8 @@ def create_app(db_url=None):
         api.add_resource(UserFullMaValidationResource, '/api/user')
         api.add_resource(
             UserAddressFullMaValidationResource, '/api/user-address')
+        api.add_resource(UserAddrProdFullMaValidationResource,
+                         '/api/user-address-product')
 
     elif VALIDATION_MODE == 'pydantic-partial':
         api.add_resource(
@@ -129,11 +145,10 @@ def create_app(db_url=None):
 
         api.add_resource(UserResource, '/api/user')
         api.add_resource(UserAddressResource, '/api/user-address')
+        api.add_resource(UserAddrProdResource, '/api/user-address-product')
 
         VALIDATION_MODE = 'no'
 
-    api.add_resource(UserAddressResource, '/api/user-address')
-    api.add_resource(UserAddrProdResource, '/api/user-address-product')
     api.add_resource(UserAddrProdShipResource,
                      '/api/user-address-product-shipping')
 
