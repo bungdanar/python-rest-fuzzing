@@ -20,3 +20,4 @@ class UserModel(db.Model):
     roles = db.relationship(
         "RoleModel", back_populates="users", secondary="user_role")
     addresses = db.relationship("AddressModel", back_populates="user")
+    products = db.relationship("ProductModel", back_populates="seller")

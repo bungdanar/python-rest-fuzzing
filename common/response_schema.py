@@ -72,6 +72,14 @@ class UserAddrResSchema(Schema):
     addresses = fields.Nested(AddressResponseSchema, many=True)
 
 
+class UserAddrProdResSchema(Schema):
+    class Meta:
+        fields = USER_FIELDS + ('addresses', 'products')
+
+    addresses = fields.Nested(AddressResponseSchema, many=True)
+    products = fields.Nested(ProductResponseSchema, many=True)
+
+
 product_res_schema = ProductResponseSchema()
 
 product_tag_category_res_schema = ProductTagCategoryResponseSchema()
@@ -84,3 +92,4 @@ product_tag_category_coupon_many_res_schema = ProductTagCategoryCouponResponseSc
 
 user_res_schema = UserResponseSchema()
 user_addr_res_schema = UserAddrResSchema()
+user_addr_prod_res_schema = UserAddrProdResSchema()
