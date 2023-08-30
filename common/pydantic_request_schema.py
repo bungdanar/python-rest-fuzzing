@@ -145,6 +145,12 @@ class UserAddrCreatePartialPydanticValidation(UserCreatePartialPydanticValidatio
     address: AddressCreatePartialPydanticValidation
 
 
+class UserAddrProdCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    addresses: List[AddressCreatePartialPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreatePartialPydanticValidation
+
+
 class UserCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
@@ -166,3 +172,9 @@ class AddressCreateFullPydanticValidation(BaseModel):
 
 class UserAddrCreateFullPydanticValidation(UserCreateFullPydanticValidation):
     address: AddressCreateFullPydanticValidation
+
+
+class UserAddrProdCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    addresses: List[AddressCreateFullPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreateFullPydanticValidation

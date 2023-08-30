@@ -3,7 +3,7 @@ from operator import itemgetter
 from flask import jsonify, request
 from flask_restful import Resource
 from marshmallow import ValidationError as MaValidationError
-from common.ma_request_schema import UserAddrProdCreateFullMaValidation, UserAddrProdCreatePartialMaValidation
+from pydantic import ValidationError as PydanticValidationError
 
 from models.user import UserModel
 from models.role import RoleModel
@@ -11,7 +11,9 @@ from models.address import AddressModel
 from models.product import ProductModel
 from common.db import db
 from common.response_schema import user_addr_prod_res_schema
-from common.handle_validation_err import handle_ma_validation_err
+from common.ma_request_schema import UserAddrProdCreateFullMaValidation, UserAddrProdCreatePartialMaValidation
+from common.pydantic_request_schema import UserAddrProdCreateFullPydanticValidation, UserAddrProdCreatePartialPydanticValidation
+from common.handle_validation_err import handle_ma_validation_err, handle_pydantic_validation_err
 
 
 def _handle_insert_user(data):
@@ -74,4 +76,32 @@ class UserAddrProdFullMaValidationResource(Resource):
             handle_ma_validation_err(err)
 
         user = _handle_insert_user(validationResult)
+        return _generate_res_for_created_user(user)
+
+
+class UserAddrProdPartialPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = UserAddrProdCreatePartialPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        user = _handle_insert_user(validationResult.model_dump())
+        return _generate_res_for_created_user(user)
+
+
+class UserAddrProdFullPydanticValidationResource(Resource):
+    def post(self):
+        data = request.get_json()
+
+        try:
+            validationResult = UserAddrProdCreateFullPydanticValidation.model_validate(
+                data, strict=False)
+        except PydanticValidationError as err:
+            handle_pydantic_validation_err(err)
+
+        user = _handle_insert_user(validationResult.model_dump())
         return _generate_res_for_created_user(user)

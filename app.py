@@ -40,7 +40,9 @@ from resources.user import (
 )
 from resources.user_addr_prod import (
     UserAddrProdFullMaValidationResource,
+    UserAddrProdFullPydanticValidationResource,
     UserAddrProdPartialMaValidationResource,
+    UserAddrProdPartialPydanticValidationResource,
     UserAddrProdResource
 )
 from resources.user_addr_prod_ship import (
@@ -144,6 +146,8 @@ def create_app(db_url=None):
             UserPartialPydanticValidationResource, '/api/user')
         api.add_resource(
             UserAddrPartialPydanticValidationResource, '/api/user-address')
+        api.add_resource(
+            UserAddrProdPartialPydanticValidationResource, '/api/user-address-product')
 
     elif VALIDATION_MODE == 'pydantic-full':
         api.add_resource(
@@ -157,6 +161,8 @@ def create_app(db_url=None):
             UserFullPydanticValidationResource, '/api/user')
         api.add_resource(
             UserAddrFullPydanticValidationResource, '/api/user-address')
+        api.add_resource(
+            UserAddrProdFullPydanticValidationResource, '/api/user-address-product')
 
     else:
         api.add_resource(ProductResource, '/api/product')
