@@ -60,8 +60,8 @@ class UserAddrProdPartialMaValidationResource(Resource):
         except MaValidationError as err:
             handle_ma_validation_err(err)
 
-        product = _handle_insert_user(validationResult)
-        return _generate_res_for_created_user(product)
+        user = _handle_insert_user(validationResult)
+        return _generate_res_for_created_user(user)
 
 
 class UserAddrProdFullMaValidationResource(Resource):
@@ -73,5 +73,5 @@ class UserAddrProdFullMaValidationResource(Resource):
         except MaValidationError as err:
             handle_ma_validation_err(err)
 
-        product = _handle_insert_user(validationResult)
-        return _generate_res_for_created_user(product)
+        user = _handle_insert_user(validationResult)
+        return _generate_res_for_created_user(user)
