@@ -132,6 +132,19 @@ class UserCreatePartialPydanticValidation(BaseModel):
     phone_number: str
 
 
+class AddressCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    street: str
+    city: str
+    country: str
+    postal_code: str
+
+
+class UserAddrCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    address: AddressCreatePartialPydanticValidation
+
+
 class UserCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
@@ -140,3 +153,16 @@ class UserCreateFullPydanticValidation(BaseModel):
     email: EmailStr = Field(max_length=255)
     phone_code: str = Field(pattern=r'^[0-9]{1,3}$')
     phone_number: str = Field(pattern=r'^[0-9]{4,12}$')
+
+
+class AddressCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    street: str = Field(min_length=3, max_length=255)
+    city: str = Field(min_length=3, max_length=255)
+    country: str = Field(min_length=3, max_length=255)
+    postal_code: str = Field(pattern=r'^[0-9]{5}$')
+
+
+class UserAddrCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    address: AddressCreateFullPydanticValidation
