@@ -41,7 +41,11 @@ from resources.user_addr_prod import (
     UserAddrProdPartialMaValidationResource,
     UserAddrProdResource
 )
-from resources.user_addr_prod_ship import UserAddrProdShipResource
+from resources.user_addr_prod_ship import (
+    UserAddrProdShipFullMaValidationResource,
+    UserAddrProdShipPartialMaValidationResource,
+    UserAddrProdShipResource
+)
 from resources.user_address import (
     UserAddressFullMaValidationResource,
     UserAddressPartialMaValidationResource,
@@ -106,6 +110,8 @@ def create_app(db_url=None):
             UserAddressPartialMaValidationResource, '/api/user-address')
         api.add_resource(UserAddrProdPartialMaValidationResource,
                          '/api/user-address-product')
+        api.add_resource(UserAddrProdShipPartialMaValidationResource,
+                         '/api/user-address-product-shipping')
 
     elif VALIDATION_MODE == 'ma-full':
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
@@ -119,6 +125,8 @@ def create_app(db_url=None):
             UserAddressFullMaValidationResource, '/api/user-address')
         api.add_resource(UserAddrProdFullMaValidationResource,
                          '/api/user-address-product')
+        api.add_resource(UserAddrProdShipFullMaValidationResource,
+                         '/api/user-address-product-shipping')
 
     elif VALIDATION_MODE == 'pydantic-partial':
         api.add_resource(
@@ -146,11 +154,10 @@ def create_app(db_url=None):
         api.add_resource(UserResource, '/api/user')
         api.add_resource(UserAddressResource, '/api/user-address')
         api.add_resource(UserAddrProdResource, '/api/user-address-product')
+        api.add_resource(UserAddrProdShipResource,
+                         '/api/user-address-product-shipping')
 
         VALIDATION_MODE = 'no'
-
-    api.add_resource(UserAddrProdShipResource,
-                     '/api/user-address-product-shipping')
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 
