@@ -34,7 +34,9 @@ import models
 from resources.user import (
     UserFullMaValidationResource,
     UserPartialMaValidationResource,
-    UserResource
+    UserResource,
+    UserFullPydanticValidationResource,
+    UserPartialPydanticValidationResource
 )
 from resources.user_addr_prod import (
     UserAddrProdFullMaValidationResource,
@@ -136,6 +138,9 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponWithPartialPydanticValidationResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(
+            UserPartialPydanticValidationResource, '/api/user')
+
     elif VALIDATION_MODE == 'pydantic-full':
         api.add_resource(
             ProductWithFullPydanticValidationResource, '/api/product')
@@ -143,6 +148,9 @@ def create_app(db_url=None):
             ProductTagCategoryWithFullPydanticValidationResource, '/api/product-tag-category')
         api.add_resource(ProductTagCategoryCouponWithFullPydanticValidationResource,
                          '/api/product-tag-category-coupon')
+
+        api.add_resource(
+            UserFullPydanticValidationResource, '/api/user')
 
     else:
         api.add_resource(ProductResource, '/api/product')

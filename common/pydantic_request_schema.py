@@ -2,7 +2,7 @@ from decimal import Decimal
 from datetime import datetime, date
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
+from pydantic import BaseModel, EmailStr, Field, model_validator, ConfigDict, constr
 
 
 class ProductCreatePartialPydanticValidation(BaseModel):
@@ -120,3 +120,23 @@ class ProductTagCategoryCouponCreateFullPydanticValidation(ProductCreateFullPyda
     categories: List[CategoryCreateFullPydanticValidation] = Field(
         min_length=1)
     coupons: List[CouponCreateFullPydanticValidation] = Field(min_length=1)
+
+
+class UserCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    first_name: str
+    last_name: str
+    email: str
+    phone_code: str
+    phone_number: str
+
+
+class UserCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    first_name: str = Field(min_length=3, max_length=255)
+    last_name: str = Field(min_length=3, max_length=255)
+    email: EmailStr = Field(max_length=255)
+    phone_code: str = Field(pattern=r'^[0-9]{1,3}$')
+    phone_number: str = Field(pattern=r'^[0-9]{4,12}$')
