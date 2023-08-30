@@ -126,3 +126,88 @@ class ProductTagCategoryCouponCreateFullMaValidation(ProductCreateFullMaValidati
 
     coupons = fields.List(fields.Nested(CouponCreateFullMaValidation(
     )), required=True, validate=validate.Length(min=1))
+
+
+class UserCreatePartialMaValidation(Schema):
+    first_name = fields.Str(required=True)
+    last_name = fields.Str(required=True)
+    email = fields.Str(required=True)
+    phone_code = fields.Str(required=True)
+    phone_number = fields.Str(required=True)
+
+
+class AddressCreatePartialMaValidation(Schema):
+    street = fields.Str(required=True)
+    city = fields.Str(required=True)
+    country = fields.Str(required=True)
+    postal_code = fields.Str(required=True)
+
+
+class ShippingCreatePartialMaValidation(Schema):
+    description = fields.Str(required=True)
+    charge = fields.Decimal(required=True)
+    free = fields.Boolean(required=False)
+    estimated_days = fields.Int(required=True)
+
+
+class UserAddrCreatePartialMaValidation(UserCreatePartialMaValidation):
+    address = fields.Nested(AddressCreatePartialMaValidation(), required=True)
+
+
+class UserAddrProdCreatePartialMaValidation(UserCreatePartialMaValidation):
+    addresses = fields.List(fields.Nested(AddressCreatePartialMaValidation(
+    )), required=True, validate=validate.Length(min=1))
+
+    product = fields.Nested(ProductCreatePartialMaValidation(), required=True)
+
+
+class UserAddrProdShipCreatePartialMaValidation(UserAddrProdCreatePartialMaValidation):
+    shipping = fields.Nested(
+        ShippingCreatePartialMaValidation(), required=True)
+
+
+class UserCreateFullMaValidation(Schema):
+    first_name = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    last_name = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    email = fields.Email(required=True, validate=validate.Length(max=255))
+    phone_code = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{1,3}$'))
+    phone_number = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{4,12}$'))
+
+
+class AddressCreateFullMaValidation(Schema):
+    street = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    city = fields.Str(required=True, validate=validate.Length(min=3, max=255))
+    country = fields.Str(
+        required=True, validate=validate.Length(min=3, max=255))
+    postal_code = fields.Str(
+        required=True, validate=validate.Regexp('^[0-9]{5}$'))
+
+
+class ShippingCreateFullMaValidation(Schema):
+    description = fields.Str(
+        required=True, validate=validate.Length(min=3, max=1000))
+    charge = fields.Decimal(
+        required=True, places=4, validate=validate.Range(min=0))
+    free = fields.Boolean(required=False)
+    estimated_days = fields.Int(
+        required=True, validate=validate.Range(min=0, max=8))
+
+
+class UserAddrCreateFullMaValidation(UserCreateFullMaValidation):
+    address = fields.Nested(AddressCreateFullMaValidation(), required=True)
+
+
+class UserAddrProdCreateFullMaValidation(UserCreateFullMaValidation):
+    addresses = fields.List(fields.Nested(AddressCreateFullMaValidation(
+    )), required=True, validate=validate.Length(min=1))
+
+    product = fields.Nested(ProductCreateFullMaValidation(), required=True)
+
+
+class UserAddrProdShipCreateFullMaValidation(UserAddrProdCreateFullMaValidation):
+    shipping = fields.Nested(ShippingCreateFullMaValidation(), required=True)

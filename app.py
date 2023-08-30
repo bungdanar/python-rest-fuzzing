@@ -31,6 +31,34 @@ from resources.product_tag_category_coupon import (
 )
 from resources.test import Test
 import models
+from resources.user import (
+    UserFullMaValidationResource,
+    UserPartialMaValidationResource,
+    UserResource,
+    UserFullPydanticValidationResource,
+    UserPartialPydanticValidationResource
+)
+from resources.user_addr_prod import (
+    UserAddrProdFullMaValidationResource,
+    UserAddrProdFullPydanticValidationResource,
+    UserAddrProdPartialMaValidationResource,
+    UserAddrProdPartialPydanticValidationResource,
+    UserAddrProdResource
+)
+from resources.user_addr_prod_ship import (
+    UserAddrProdShipFullMaValidationResource,
+    UserAddrProdShipFullPydanticValidationResource,
+    UserAddrProdShipPartialMaValidationResource,
+    UserAddrProdShipPartialPydanticValidationResource,
+    UserAddrProdShipResource
+)
+from resources.user_address import (
+    UserAddrFullPydanticValidationResource,
+    UserAddrPartialPydanticValidationResource,
+    UserAddressFullMaValidationResource,
+    UserAddressPartialMaValidationResource,
+    UserAddressResource
+)
 
 
 def create_app(db_url=None):
@@ -85,12 +113,28 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponWithPartialMaValidationResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(UserPartialMaValidationResource, '/api/user')
+        api.add_resource(
+            UserAddressPartialMaValidationResource, '/api/user-address')
+        api.add_resource(UserAddrProdPartialMaValidationResource,
+                         '/api/user-address-product')
+        api.add_resource(UserAddrProdShipPartialMaValidationResource,
+                         '/api/user-address-product-shipping')
+
     elif VALIDATION_MODE == 'ma-full':
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
         api.add_resource(
             ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
         api.add_resource(ProductTagCategoryCouponWithFullMaValidationResource,
                          '/api/product-tag-category-coupon')
+
+        api.add_resource(UserFullMaValidationResource, '/api/user')
+        api.add_resource(
+            UserAddressFullMaValidationResource, '/api/user-address')
+        api.add_resource(UserAddrProdFullMaValidationResource,
+                         '/api/user-address-product')
+        api.add_resource(UserAddrProdShipFullMaValidationResource,
+                         '/api/user-address-product-shipping')
 
     elif VALIDATION_MODE == 'pydantic-partial':
         api.add_resource(
@@ -100,6 +144,15 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponWithPartialPydanticValidationResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(
+            UserPartialPydanticValidationResource, '/api/user')
+        api.add_resource(
+            UserAddrPartialPydanticValidationResource, '/api/user-address')
+        api.add_resource(
+            UserAddrProdPartialPydanticValidationResource, '/api/user-address-product')
+        api.add_resource(UserAddrProdShipPartialPydanticValidationResource,
+                         '/api/user-address-product-shipping')
+
     elif VALIDATION_MODE == 'pydantic-full':
         api.add_resource(
             ProductWithFullPydanticValidationResource, '/api/product')
@@ -108,12 +161,27 @@ def create_app(db_url=None):
         api.add_resource(ProductTagCategoryCouponWithFullPydanticValidationResource,
                          '/api/product-tag-category-coupon')
 
+        api.add_resource(
+            UserFullPydanticValidationResource, '/api/user')
+        api.add_resource(
+            UserAddrFullPydanticValidationResource, '/api/user-address')
+        api.add_resource(
+            UserAddrProdFullPydanticValidationResource, '/api/user-address-product')
+        api.add_resource(UserAddrProdShipFullPydanticValidationResource,
+                         '/api/user-address-product-shipping')
+
     else:
         api.add_resource(ProductResource, '/api/product')
         api.add_resource(ProductTagCategoryResource,
                          '/api/product-tag-category')
         api.add_resource(ProductTagCategoryCouponResource,
                          '/api/product-tag-category-coupon')
+
+        api.add_resource(UserResource, '/api/user')
+        api.add_resource(UserAddressResource, '/api/user-address')
+        api.add_resource(UserAddrProdResource, '/api/user-address-product')
+        api.add_resource(UserAddrProdShipResource,
+                         '/api/user-address-product-shipping')
 
         VALIDATION_MODE = 'no'
 

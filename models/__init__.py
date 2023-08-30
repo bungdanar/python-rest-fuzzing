@@ -5,3 +5,8 @@ from models.coupon import CouponModel
 from models.product_tag import ProductTagModel
 from models.product_category import ProductCategoryModel
 from models.product_coupon import ProductCouponModel
+from models.user import UserModel
+from models.role import RoleModel
+from models.user_role import UserRoleModel
+from models.address import AddressModel
+from models.shipping import ShippingModel

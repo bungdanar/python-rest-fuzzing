@@ -2,7 +2,7 @@ from decimal import Decimal
 from datetime import datetime, date
 from typing import List
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
+from pydantic import BaseModel, EmailStr, Field, model_validator, ConfigDict, constr
 
 
 class ProductCreatePartialPydanticValidation(BaseModel):
@@ -120,3 +120,93 @@ class ProductTagCategoryCouponCreateFullPydanticValidation(ProductCreateFullPyda
     categories: List[CategoryCreateFullPydanticValidation] = Field(
         min_length=1)
     coupons: List[CouponCreateFullPydanticValidation] = Field(min_length=1)
+
+
+class UserCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    first_name: str
+    last_name: str
+    email: str
+    phone_code: str
+    phone_number: str
+
+
+class AddressCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    street: str
+    city: str
+    country: str
+    postal_code: str
+
+
+class ShippingCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    description: str
+    charge: Decimal
+    free: bool = False
+    estimated_days: int
+
+
+class UserAddrCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    address: AddressCreatePartialPydanticValidation
+
+
+class UserAddrProdCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    addresses: List[AddressCreatePartialPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreatePartialPydanticValidation
+
+
+class UserAddrProdShipCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    addresses: List[AddressCreatePartialPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreatePartialPydanticValidation
+    shipping: ShippingCreatePartialPydanticValidation
+
+
+class UserCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    first_name: str = Field(min_length=3, max_length=255)
+    last_name: str = Field(min_length=3, max_length=255)
+    email: EmailStr = Field(max_length=255)
+    phone_code: str = Field(pattern=r'^[0-9]{1,3}$')
+    phone_number: str = Field(pattern=r'^[0-9]{4,12}$')
+
+
+class AddressCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    street: str = Field(min_length=3, max_length=255)
+    city: str = Field(min_length=3, max_length=255)
+    country: str = Field(min_length=3, max_length=255)
+    postal_code: str = Field(pattern=r'^[0-9]{5}$')
+
+
+class ShippingCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    description: str = Field(min_length=3, max_length=1000)
+    charge: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
+    free: bool = False
+    estimated_days: int = Field(ge=0, le=8)
+
+
+class UserAddrCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    address: AddressCreateFullPydanticValidation
+
+
+class UserAddrProdCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    addresses: List[AddressCreateFullPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreateFullPydanticValidation
+
+
+class UserAddrProdShipCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    addresses: List[AddressCreateFullPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreateFullPydanticValidation
+    shipping: ShippingCreateFullPydanticValidation
