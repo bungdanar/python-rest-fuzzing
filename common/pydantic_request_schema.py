@@ -141,6 +141,15 @@ class AddressCreatePartialPydanticValidation(BaseModel):
     postal_code: str
 
 
+class ShippingCreatePartialPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    description: str
+    charge: Decimal
+    free: bool = False
+    estimated_days: int
+
+
 class UserAddrCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
     address: AddressCreatePartialPydanticValidation
 
@@ -149,6 +158,13 @@ class UserAddrProdCreatePartialPydanticValidation(UserCreatePartialPydanticValid
     addresses: List[AddressCreatePartialPydanticValidation] = Field(
         min_length=1)
     product: ProductCreatePartialPydanticValidation
+
+
+class UserAddrProdShipCreatePartialPydanticValidation(UserCreatePartialPydanticValidation):
+    addresses: List[AddressCreatePartialPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreatePartialPydanticValidation
+    shipping: ShippingCreatePartialPydanticValidation
 
 
 class UserCreateFullPydanticValidation(BaseModel):
@@ -170,6 +186,15 @@ class AddressCreateFullPydanticValidation(BaseModel):
     postal_code: str = Field(pattern=r'^[0-9]{5}$')
 
 
+class ShippingCreateFullPydanticValidation(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    description: str = Field(min_length=3, max_length=1000)
+    charge: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
+    free: bool = False
+    estimated_days: int = Field(ge=0, le=8)
+
+
 class UserAddrCreateFullPydanticValidation(UserCreateFullPydanticValidation):
     address: AddressCreateFullPydanticValidation
 
@@ -178,3 +203,10 @@ class UserAddrProdCreateFullPydanticValidation(UserCreateFullPydanticValidation)
     addresses: List[AddressCreateFullPydanticValidation] = Field(
         min_length=1)
     product: ProductCreateFullPydanticValidation
+
+
+class UserAddrProdShipCreateFullPydanticValidation(UserCreateFullPydanticValidation):
+    addresses: List[AddressCreateFullPydanticValidation] = Field(
+        min_length=1)
+    product: ProductCreateFullPydanticValidation
+    shipping: ShippingCreateFullPydanticValidation
