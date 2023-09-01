@@ -4,8 +4,9 @@ import time
 from flask import Flask, request, jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 
-from common.custom_logger import create_res_time_logger
+from common.custom_logger import create_res_time_logger, create_err_500_logger
 from common.db import db
 from common.ma import ma
 from resources.product import (
@@ -77,6 +78,7 @@ def create_app(db_url=None):
     VALIDATION_MODE = os.getenv("VALIDATION", "no")
 
     res_time_logger = create_res_time_logger()
+    err_500_logger = create_err_500_logger()
 
     @app.before_request
     def start_timer():
@@ -87,7 +89,7 @@ def create_app(db_url=None):
         if hasattr(request, 'start_time'):
             res_time = (time.time() - request.start_time) * 1000
             res_time_logger.info(
-                f' {request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
+                f'{request.method} {request.path} {response.status_code} {res_time:.3f}ms validation={VALIDATION_MODE}')
 
         return response
 
@@ -98,10 +100,20 @@ def create_app(db_url=None):
 
         print('EXCEPTION: ', e)
 
+        status_code = 500
+
+        err_msg = str(e)
+        if isinstance(e, SQLAlchemyError):
+            err_msg = err_msg.split('\n')[0]
+
+        err_500_logger.info(
+            f'#{request.method}#{request.path}#{status_code}#validation={VALIDATION_MODE}#msg={err_msg}'
+        )
+
         return jsonify({
-            "statusCode": 500,
-            "message": "Internal Server Error"
-        }), 500
+            "statusCode": status_code,
+            "message": err_msg
+        }), status_code
 
     api.add_resource(Test, '/')
 
