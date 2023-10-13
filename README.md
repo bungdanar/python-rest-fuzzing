@@ -53,3 +53,10 @@ If you want to conduct fuzzing experiments on this application, you can use seve
 Fuzzing tools usually require OpenAPI specification to generate and send fuzzing payloads to application. You may want to replace the server URL value in the `openapi.json` file as the default value is http://localhost:5000/api
 
 Before carrying out fuzzing experiments, especially experiments with different fuzzing tools and input validation libraries, it is a good idea to delete the `logs` directory first so that the resulting logs match the fuzzing tool and input validation library used.
+
+## Note for Full Validation Mode
+In full validation mode, I intentionally do not implement full validation in certain fields, namely regular_price (Product), max_usage (Coupon), and charge (Shipping).
+
+For example, in the Coupon entity, there is max_usage field which has integer data type. I only implement validation against the minimum constraint of the field, which is greater than or equal to 0, and do not implement validation against the maximum constraint of the field. If the client sends max_usage data that exceeds the maximum constraint of the MySQL integer field (4294967295) then the data sent by the client will trigger an error in the application.
+
+This aims to find out whether the fuzzing tool can find these remaining errors.
