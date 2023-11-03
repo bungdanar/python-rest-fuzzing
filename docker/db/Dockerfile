@@ -1,6 +1,6 @@
 FROM mysql:latest
 
 ENV MYSQL_ROOT_PASSWORD 'root'
-ENV MYSQL_DATABASE 'ecommerce'
+ENV MYSQL_DATABASE 'ecommerce_dvwa'
 
-COPY ecommerce.sql /docker-entrypoint-initdb.d/
+COPY ecommerce_dvwa.sql /docker-entrypoint-initdb.d/
