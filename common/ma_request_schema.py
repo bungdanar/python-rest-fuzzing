@@ -59,7 +59,7 @@ class ProductCreateFullMaValidation(Schema):
     name = fields.Str(required=True, validate=validate.Length(min=3, max=255))
     sku = fields.Str(required=True, validate=validate.Length(min=3, max=255))
     regular_price = fields.Decimal(
-        required=True, places=4, validate=validate.Range(min=0))
+        required=True, places=4, validate=validate.Range(min=0, max=999999999999999.9999))
     discount_price = fields.Decimal(
         required=True, places=4, validate=validate.Range(min=0))
     quantity = fields.Int(
@@ -93,7 +93,8 @@ class CouponCreateFullMaValidation(Schema):
     discount_type = fields.Str(
         required=True, validate=validate.Length(min=3, max=255))
     times_used = fields.Int(required=False, validate=validate.Range(min=0))
-    max_usage = fields.Int(required=True, validate=validate.Range(min=0))
+    max_usage = fields.Int(
+        required=True, validate=validate.Range(min=0, max=9999))
     start_date = DateOrDatetimeField(required=True)
     end_date = DateOrDatetimeField(required=True)
 
@@ -192,7 +193,7 @@ class ShippingCreateFullMaValidation(Schema):
     description = fields.Str(
         required=True, validate=validate.Length(min=3, max=1000))
     charge = fields.Decimal(
-        required=True, places=4, validate=validate.Range(min=0))
+        required=True, places=4, validate=validate.Range(min=0, max=999999999999999.9999))
     free = fields.Boolean(required=False)
     estimated_days = fields.Int(
         required=True, validate=validate.Range(min=0, max=8))

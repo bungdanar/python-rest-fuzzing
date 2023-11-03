@@ -89,7 +89,7 @@ class CouponCreateFullPydanticValidation(BaseModel):
         ge=0, le=100, max_digits=5, decimal_places=2)
     discount_type: str = Field(min_length=3, max_length=255)
     times_used: int = Field(ge=0, default=0)
-    max_usage: int = Field(ge=0)
+    max_usage: int = Field(ge=0, le=9999)
     start_date: datetime | date
     end_date: datetime | date
 
