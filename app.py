@@ -75,7 +75,7 @@ def create_app(db_url=None):
     ma.init_app(app)
     api = Api(app)
 
-    VALIDATION_MODE = os.getenv("VALIDATION", "no")
+    VALIDATION_MODE = os.getenv("VALIDATION", "none")
 
     res_time_logger = create_res_time_logger()
     err_500_logger = create_err_500_logger()
@@ -195,7 +195,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipResource,
                          '/api/user-address-product-shipping')
 
-        VALIDATION_MODE = 'no'
+        VALIDATION_MODE = 'none'
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 
