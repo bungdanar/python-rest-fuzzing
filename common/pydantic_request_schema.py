@@ -56,8 +56,8 @@ class ProductCreateFullPydanticValidation(BaseModel):
 
     name: str = Field(min_length=3, max_length=255)
     sku: str = Field(min_length=3, max_length=255)
-    regular_price: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
-    discount_price: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
+    regular_price: Decimal = Field(ge=0, decimal_places=4)
+    discount_price: Decimal = Field(ge=0, decimal_places=4)
     quantity: int = Field(ge=0, le=9999)
     description: str = Field(min_length=3, max_length=1000)
     weight: Decimal = Field(ge=0, le=1000, max_digits=8, decimal_places=4)
@@ -190,7 +190,7 @@ class ShippingCreateFullPydanticValidation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
     description: str = Field(min_length=3, max_length=1000)
-    charge: Decimal = Field(ge=0, max_digits=19, decimal_places=4)
+    charge: Decimal = Field(ge=0, decimal_places=4)
     free: bool = False
     estimated_days: int = Field(ge=0, le=8)
 
