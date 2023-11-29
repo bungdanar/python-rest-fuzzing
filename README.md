@@ -57,6 +57,6 @@ Before carrying out fuzzing experiments, especially experiments with different f
 ## Note for Full Validation Mode
 In full validation mode, I intentionally do not implement full validation in certain fields, namely `regular_price` (Product), `max_usage` (Coupon), and `charge` (Shipping).
 
-For example, in the Coupon entity, there is `max_usage` field which has integer data type. I only implement validation against the minimum constraint of the field, which is greater than or equal to 0, and do not implement validation against the maximum constraint of the field. If the client sends `max_usage` data that exceeds the maximum constraint of the MySQL integer field (4294967295) then the data sent by the client will trigger an error in the application.
+For example, in the Product entity, there is `regular_price` field which has decimal(19, 4) data type. I only implement validation against the minimum constraint of the field, which is greater than or equal to 0, and do not implement validation against the maximum constraint of the field. If the client sends `regular_price` data that exceeds the maximum constraint of the decimal(19, 4) field (999999999999999.9999) then the data sent by the client will trigger an error in the application.
 
 This aims to find out whether the fuzzing tool can find these remaining errors.
