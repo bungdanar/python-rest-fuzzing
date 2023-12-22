@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
 --
--- Host: localhost    Database: ecommerce_fuzzing
+-- Host: localhost    Database: ecommerce
 -- ------------------------------------------------------
 -- Server version	8.0.31
 
@@ -346,7 +346,7 @@ CREATE TABLE `user` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  CONSTRAINT `check_user_email` CHECK (regexp_like(`email`,_utf8mb4'^[A-Z0-9._%-]+@[A-Z0-9.-]+.[A-Z]{2,4}$')),
+  CONSTRAINT `check_user_email` CHECK (regexp_like(`email`,_utf8mb4'^[a-z0-9._+-]{1,20}@[a-z0-9]{3,15}([.][a-z]{2,4}){1,3}$')),
   CONSTRAINT `check_user_min_first_name` CHECK ((char_length(`first_name`) >= 3)),
   CONSTRAINT `check_user_min_last_name` CHECK ((char_length(`last_name`) >= 3)),
   CONSTRAINT `check_user_phone_code` CHECK (regexp_like(`phone_code`,_utf8mb4'^[0-9]{1,3}$')),
@@ -402,4 +402,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-26 13:13:48
+-- Dump completed on 2023-12-22  9:04:54
