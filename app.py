@@ -9,6 +9,8 @@ from werkzeug.exceptions import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import text
 
+import models
+
 from common.custom_logger import create_res_time_logger, create_err_500_logger
 from common.db import db
 from common.ma import ma
@@ -33,8 +35,6 @@ from resources.product_tag_category_coupon import (
     ProductTagCategoryCouponWithPartialMaValidationResource,
     ProductTagCategoryCouponWithPartialPydanticValidationResource
 )
-from resources.test import Test
-import models
 from resources.user import (
     UserFullMaValidationResource,
     UserPartialMaValidationResource,
@@ -131,8 +131,6 @@ def create_app(db_url=None):
             "statusCode": status_code,
             "message": err_msg
         }), status_code
-
-    api.add_resource(Test, '/')
 
     if VALIDATION_MODE == 'ma-partial':
         api.add_resource(
