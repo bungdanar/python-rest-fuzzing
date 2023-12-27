@@ -63,6 +63,7 @@ from resources.user_address import (
     UserAddressPartialMaValidationResource,
     UserAddressResource
 )
+from common.validation_mode import ValidationMode
 
 
 def create_app(db_url=None):
@@ -83,6 +84,11 @@ def create_app(db_url=None):
     ma.init_app(app)
     api = Api(app)
 
+    # Check validation mode
+    VALIDATION_MODE = os.getenv("VALIDATION")
+    if not any(VALIDATION_MODE == mode.value for mode in ValidationMode):
+        sys.exit('Error: Unknown validation mode')
+
     # Check db connection
     with app.app_context():
         try:
@@ -90,9 +96,7 @@ def create_app(db_url=None):
             app.logger.info('Connected to database')
         except Exception as e:
             dbErr = str(e)
-            sys.exit(dbErr)
-
-    VALIDATION_MODE = os.getenv("VALIDATION", "no")
+            sys.exit(f'Error: {dbErr}')
 
     res_time_logger = create_res_time_logger()
     err_500_logger = create_err_500_logger()
@@ -132,7 +136,7 @@ def create_app(db_url=None):
             "message": err_msg
         }), status_code
 
-    if VALIDATION_MODE == 'ma-partial':
+    if VALIDATION_MODE == ValidationMode.MA_PARTIAL.value:
         api.add_resource(
             ProductWithPartialMaValidationResource, '/api/product')
         api.add_resource(
@@ -148,7 +152,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipPartialMaValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'ma-full':
+    elif VALIDATION_MODE == ValidationMode.MA_FULL.value:
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
         api.add_resource(
             ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
@@ -163,7 +167,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipFullMaValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'pydantic-partial':
+    elif VALIDATION_MODE == ValidationMode.PYDANTIC_PARTIAL.value:
         api.add_resource(
             ProductWithPartialPydanticValidationResource, '/api/product')
         api.add_resource(
@@ -180,7 +184,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipPartialPydanticValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'pydantic-full':
+    elif VALIDATION_MODE == ValidationMode.PYDANTIC_FULL.value:
         api.add_resource(
             ProductWithFullPydanticValidationResource, '/api/product')
         api.add_resource(
@@ -210,7 +214,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipResource,
                          '/api/user-address-product-shipping')
 
-        VALIDATION_MODE = 'no'
+        VALIDATION_MODE = ValidationMode.NO.value
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 
