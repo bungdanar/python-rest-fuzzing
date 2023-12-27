@@ -1,10 +1,13 @@
 import os
 import time
+import logging
+import sys
 
 from flask import Flask, request, jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql import text
 
 from common.custom_logger import create_res_time_logger, create_err_500_logger
 from common.db import db
@@ -65,6 +68,11 @@ from resources.user_address import (
 def create_app(db_url=None):
     app = Flask(__name__)
 
+    if not app.debug:
+        gunicorn_logger = logging.getLogger('gunicorn.error')
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
+
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
         "DATABASE_URL", "sqlite:///data.db")
@@ -74,6 +82,15 @@ def create_app(db_url=None):
     db.init_app(app)
     ma.init_app(app)
     api = Api(app)
+
+    # Check db connection
+    with app.app_context():
+        try:
+            db.session.execute(text('SELECT 1'))
+            app.logger.info('Connected to database')
+        except Exception as e:
+            dbErr = str(e)
+            sys.exit(dbErr)
 
     VALIDATION_MODE = os.getenv("VALIDATION", "no")
 
