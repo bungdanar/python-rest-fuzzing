@@ -47,6 +47,8 @@ The application generates 2 log files to record unhandled/unexpected errors and 
 | logs/err500.log   | logs unhandled/unexpected errors |
 | logs/res-time.log | logs application response time   |
 
+You can use this [Python script](https://github.com/bungdanar/data-processing) to calculate the number of unique errors and average response time.
+
 ## Fuzzing Experiment
 If you want to conduct fuzzing experiments on this application, you can use several fuzzing tools such as [Restler](https://github.com/microsoft/restler-fuzzer), [EvoMaster](https://github.com/EMResearch/EvoMaster), [RestTestGen](https://github.com/SeUniVr/RestTestGen), or other tools that can perform fuzzing on RESTful API.
 
