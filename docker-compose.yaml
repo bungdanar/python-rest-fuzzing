@@ -6,7 +6,7 @@ networks:
 
 services:
   db:
-    image: bungdanar/mysql-rest-fuzzing:extended
+    image: bungdanar/mysql-rest-fuzzing
     restart: 'no'
     build:
       context: .
@@ -15,7 +15,7 @@ services:
       - rest-fuzzing
 
   webapi:
-    image: bungdanar/python-rest-fuzzing:extended
+    image: bungdanar/python-rest-fuzzing
     depends_on:
       - db
     restart: 'no'
