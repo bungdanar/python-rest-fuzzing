@@ -1,10 +1,15 @@
 import os
 import time
+import logging
+import sys
 
 from flask import Flask, request, jsonify
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.sql import text
+
+import models
 
 from common.custom_logger import create_res_time_logger, create_err_500_logger
 from common.db import db
@@ -30,8 +35,6 @@ from resources.product_tag_category_coupon import (
     ProductTagCategoryCouponWithPartialMaValidationResource,
     ProductTagCategoryCouponWithPartialPydanticValidationResource
 )
-from resources.test import Test
-import models
 from resources.user import (
     UserFullMaValidationResource,
     UserPartialMaValidationResource,
@@ -60,10 +63,19 @@ from resources.user_address import (
     UserAddressPartialMaValidationResource,
     UserAddressResource
 )
+from common.validation_mode import ValidationMode
 
 
 def create_app(db_url=None):
     app = Flask(__name__)
+    EXIT_CODE = 0
+
+    if not app.debug:
+        EXIT_CODE = 4
+
+        gunicorn_logger = logging.getLogger('gunicorn.error')
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
 
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
@@ -75,7 +87,20 @@ def create_app(db_url=None):
     ma.init_app(app)
     api = Api(app)
 
-    VALIDATION_MODE = os.getenv("VALIDATION", "no")
+    # Check validation mode
+    VALIDATION_MODE = os.getenv("VALIDATION")
+    if not any(VALIDATION_MODE == mode.value for mode in ValidationMode):
+        app.logger.error('Unknown validation mode')
+        sys.exit(EXIT_CODE)
+
+    # Check db connection
+    with app.app_context():
+        try:
+            db.session.execute(text('SELECT 1'))
+            app.logger.info('Connected to database')
+        except Exception as e:
+            app.logger.error(str(e))
+            sys.exit(EXIT_CODE)
 
     res_time_logger = create_res_time_logger()
     err_500_logger = create_err_500_logger()
@@ -115,9 +140,7 @@ def create_app(db_url=None):
             "message": err_msg
         }), status_code
 
-    api.add_resource(Test, '/')
-
-    if VALIDATION_MODE == 'ma-partial':
+    if VALIDATION_MODE == ValidationMode.MA_PARTIAL.value:
         api.add_resource(
             ProductWithPartialMaValidationResource, '/api/product')
         api.add_resource(
@@ -133,7 +156,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipPartialMaValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'ma-full':
+    elif VALIDATION_MODE == ValidationMode.MA_FULL.value:
         api.add_resource(ProductWithFullMaValidationResource, '/api/product')
         api.add_resource(
             ProductTagCategoryWithFullMaValidationResource, '/api/product-tag-category')
@@ -148,7 +171,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipFullMaValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'pydantic-partial':
+    elif VALIDATION_MODE == ValidationMode.PYDANTIC_PARTIAL.value:
         api.add_resource(
             ProductWithPartialPydanticValidationResource, '/api/product')
         api.add_resource(
@@ -165,7 +188,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipPartialPydanticValidationResource,
                          '/api/user-address-product-shipping')
 
-    elif VALIDATION_MODE == 'pydantic-full':
+    elif VALIDATION_MODE == ValidationMode.PYDANTIC_FULL.value:
         api.add_resource(
             ProductWithFullPydanticValidationResource, '/api/product')
         api.add_resource(
@@ -195,7 +218,7 @@ def create_app(db_url=None):
         api.add_resource(UserAddrProdShipResource,
                          '/api/user-address-product-shipping')
 
-        VALIDATION_MODE = 'no'
+        VALIDATION_MODE = ValidationMode.NO.value
 
     app.logger.info(f"App is running with validation mode: {VALIDATION_MODE}")
 
